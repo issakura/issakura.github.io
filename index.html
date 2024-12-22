@@ -1,0 +1,240 @@
+<!DOCTYPE html> <html lang="zh-CN">
+<head> <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>精美图片展示</title>
+<style> body { font-family: sans-serif; margin: 0; background-color: #f4f4f4; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 900px;
+        width: 95%;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        color: #007bff;
+    }
+
+    .gallery {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .nav-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #555;
+        cursor: pointer;
+        padding: 10px;
+        transition: color 0.3s ease;
+    }
+
+    .nav-btn:hover {
+        color: #007bff;
+    }
+
+    .image-container {
+        flex-grow: 1;
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #current-image {
+        width: 100%;
+        display: block;
+        cursor: zoom-in; /* 指示可以点击放大 */
+        transition: transform 0.3s ease;
+    }
+
+    #current-image:hover {
+        transform: scale(1.03);
+    }
+
+    .image-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 15px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .image-container:hover .image-info {
+        opacity: 1;
+    }
+
+    .image-info h2 {
+        margin-top: 0;
+        font-size: 1.2em;
+    }
+
+    .image-info p {
+        margin-bottom: 0;
+        font-size: 0.9em;
+    }
+
+    .thumbnail-bar {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .thumbnail {
+        width: 70px;
+        height: 50px;
+        object-fit: cover;
+        cursor: pointer;
+        border-radius: 4px;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .thumbnail:hover, .thumbnail.active {
+        opacity: 1;
+        border-color: #007bff;
+    }
+
+    /* 灯箱效果 */
+    .lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .lightbox-content {
+        max-width: 90%;
+        max-height: 90%;
+        display: block;
+        border-radius: 8px;
+    }
+
+    .close-lightbox {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+
+    .close-lightbox:hover {
+        opacity: 1;
+    }
+</style>
+</head> <body> <div class="container">
+<h1>精选图片</h1>
+<div class="gallery"> <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button> 
+<div class="image-container"> <img id="current-image" src="images/image1.jpg" alt="当前图片"> <div class="image-info"> <h2 id="image-title"></h2> <p id="image-description"></p> </div> </div>
+<button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button> </div>
+    <div class="thumbnail-bar">
+        <!-- 缩略图将在这里动态生成 -->
+    </div>
+</div>
+<div id="lightbox" class="lightbox">
+    <span class="close-lightbox">&times;</span>
+    <img class="lightbox-content" id="lightbox-image" src="" alt="放大图片">
+</div>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+<script>
+    const images = [
+        {
+            src: 'https://img.16k.club/mofish/2024-12-22/653fd31f9a3eededfb787d8dc4692610.webp',
+            title: 'jk',
+            description: 'jk。'
+        },
+        // 更多图片对象
+    ];
+
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const currentImage = document.getElementById('current-image');
+    const imageTitle = document.getElementById('image-title');
+    const imageDescription = document.getElementById('image-description');
+    const thumbnailBar = document.querySelector('.thumbnail-bar');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const closeLightbox = document.querySelector('.close-lightbox');
+
+    let currentIndex = 0;
+
+    function updateGallery() {
+        const current = images[currentIndex];
+        currentImage.src = current.src;
+        currentImage.alt = current.title;
+        imageTitle.textContent = current.title;
+        imageDescription.textContent = current.description;
+
+        // 更新缩略图的激活状态
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        thumbnails.forEach((thumb, index) => {
+            thumb.classList.toggle('active', index === currentIndex);
+        });
+    }
+
+    function createThumbnails() {
+        thumbnailBar.innerHTML = ''; // 清空之前的缩略图
+        images.forEach((image, index) => {
+            const thumb = document.createElement('img');
+            thumb.src = image.src;
+            thumb.alt = image.title;
+            thumb.classList.add('thumbnail');
+            thumb.addEventListener('click', () => {
+                currentIndex = index;
+                updateGallery();
+            });
+            thumbnailBar.appendChild(thumb);
+        });
+    }
+
+    prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateGallery();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateGallery();
+    });
+
+    // 初始化画廊
+    updateGallery();
+    createThumbnails();
+
+    // 灯箱效果
+    currentImage.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
+        lightboxImage.src = images[currentIndex].src;
+    });
+
+    closeLightbox.addEventListener('click', () => {
+        lightbox.style.display = 'none';
+    });
+
+    lightbox.addEventListener('click', (event) => {
+        if (event.target === lightbox) {
+            lightbox.style.display = 'none';
+        }
+    });
+</script>
+</body> </html> 
