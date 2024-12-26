@@ -170,29 +170,32 @@
       threshold: 20,
       loop: true,
     });
-
-    document.addEventListener('touchmove', function(e) {
-      if (!e.target.closest('.content-wrapper')) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    document.addEventListener('dragstart', function(e) {
-      e.preventDefault();
-    });
     const intervalTime = 3000;
-const siemaContainer = document.querySelector('.siema');
-siemaContainer.addEventListener('mouseenter', () => {
-  clearInterval(timer);
+let timer;
+document.addEventListener('touchmove', function(e) {
+  if (!e.target.closest('.content-wrapper')) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('dragstart', function(e) {
+  e.preventDefault();
 });
-siemaContainer.addEventListener('mouseleave', () => {
+
+const siemaContainer = document.querySelector('.siema');
+siemaContainer.addEventListener('mouseenter', stopTimer);
+siemaContainer.addEventListener('mouseleave', startTimer);
+siemaContainer.addEventListener('touchstart', stopTimer);
+siemaContainer.addEventListener('touchend', startTimer);
+function stopTimer() {
+  clearInterval(timer);
+}
+function startTimer() {
+  clearInterval(timer);
   timer = setInterval(() => {
     mySiema.next();
   }, intervalTime);
-});
-setInterval(() => {
-  mySiema.next();
-}, intervalTime);
-  </script>
+}
+startTimer();
 </body>
 </html>
