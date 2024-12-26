@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +34,6 @@
       width: 100%;
       max-width: 800px;
       margin: 2rem auto;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
       border-radius: 10px;
       overflow: hidden;
     }
@@ -45,30 +44,11 @@
       display: block;
     }
 
-    .controls {
-      margin-top: 1.5rem;
-      display: flex;
-      gap: 1rem;
-    }
-
-    button {
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 25px;
-      background: #4a90e2;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-    }
-
-    button:hover {
-      background: #357abd;
-      transform: translateY(-2px);
-    }
-
-    button:active {
-      transform: translateY(0);
+    .hint {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #4a90e2;
+      opacity: 0.7;
     }
 
     /* 垂直区按钮 */
@@ -78,10 +58,22 @@
 
     .vertical-section button {
       background: #e94e77;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
     }
 
     .vertical-section button:hover {
       background: #d63763;
+      transform: translateY(-2px);
+    }
+
+    .vertical-section button:active {
+      transform: translateY(0);
     }
 
     /* 响应式设计 */
@@ -101,17 +93,12 @@
         padding: 1rem 0.5rem;
       }
 
-      .controls {
-        margin-top: 1rem;
-      }
-
       h1 {
         font-size: 1.5rem;
       }
 
-      button {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
+      .hint {
+        font-size: 1rem;
       }
     }
   </style>
@@ -128,10 +115,9 @@
     </div>
   </div>
 
-  <!-- 控制按钮 -->
-  <div class="controls">
-    <button class="prev">Previous</button>
-    <button class="next">Next</button>
+  <!-- 提示信息 -->
+  <div class="hint">
+    <p>请滑动图片进行切换</p>
   </div>
 
   <!-- 垂直区跳转按钮 -->
@@ -150,10 +136,6 @@
       threshold: 20,
       loop: true,
     });
-
-    // 左右切换按钮功能
-    document.querySelector('.prev').addEventListener('click', () => mySiema.prev());
-    document.querySelector('.next').addEventListener('click', () => mySiema.next());
   </script>
 </body>
 </html>
