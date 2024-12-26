@@ -3,108 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Slider</title>
+  <title>Dynamic Image Slider</title>
   <script src="https://cdn.jsdelivr.net/npm/siema@1.5.1/dist/siema.min.js"></script>
-</head>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    width: 100%;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1rem;
-  }
-
-  .slider-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .siema {
-    margin: 0;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures image fills the container and maintains aspect ratio */
-    display: block;
-  }
-
-  .controls {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-  }
-
-  button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 25px;
-    background: #4a90e2;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-  }
-
-  button:hover {
-    background: #357abd;
-    transform: translateY(-2px);
-  }
-
-  button:active {
-    transform: translateY(0);
-  }
-
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .slider-container {
-      max-width: 100%;
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    
-    button {
-      padding: 0.6rem 1.2rem;
-      font-size: 0.9rem;
-    }
-  }
 
-  @media (max-width: 480px) {
     body {
-      padding: 1rem 0.5rem;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
     }
-    
+
+    .slider-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .siema {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    img {
+      max-width: 100%;
+      max-height: 100vh; /* 限制图片高度为视窗高度 */
+      height: auto;
+      width: auto;
+      display: block;
+    }
+
     .controls {
-      margin-top: 1rem;
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
     }
-    
+
     button {
-      padding: 0.5rem 1rem;
-      font-size: 0.8rem;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      background: #4a90e2;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
     }
-  }
-</style>
+
+    button:hover {
+      background: #357abd;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .slider-container {
+        max-width: 100%;
+      }
+
+      button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem 0.5rem;
+      }
+
+      .controls {
+        margin-top: 1rem;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
 <body>
   <div class="slider-container">
     <div class="siema">
-      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png">
-      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png">
-      <img src="https://cdn.10086.click/show/2024-12-26/4e317ede-b55c-4d11-a4a6-5799e10eea10.jpg">
+      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png" alt="Image 1">
+      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png" alt="Image 2">
+      <img src="https://cdn.10086.click/show/2024-12-26/4e317ede-b55c-4d11-a4a6-5799e10eea10.jpg" alt="Image 3">
     </div>
   </div>
-  
+
   <div class="controls">
     <button class="prev">Previous</button>
     <button class="next">Next</button>
