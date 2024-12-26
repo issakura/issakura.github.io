@@ -1,327 +1,128 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>精美写真集</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #fce7f3, #ffffff, #f3e8ff);
-            font-family: system-ui, -apple-system, sans-serif;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: #1f2937;
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.5rem;
-            background: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .gallery-item-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            color: white;
-            opacity: 0;
-            transform: translateY(1rem);
-            transition: all 0.3s ease;
-        }
-
-        .gallery-item:hover .gallery-item-info {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .gallery-item-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .gallery-item-desc {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: none;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightbox.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .lightbox-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90vh;
-            margin: auto;
-        }
-
-        .lightbox img {
-            max-width: 100%;
-            max-height: 85vh;
-            object-fit: contain;
-        }
-
-        .lightbox-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            color: white;
-        }
-
-        .lightbox-controls {
-            position: absolute;
-            bottom: 2rem;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 2rem;
-        }
-
-        .lightbox-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .lightbox-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .lightbox-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-
-            body {
-                padding: 1rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Slider</title>
+  <script src="https://cdn.jsdelivr.net/npm/siema@1.5.1/dist/siema.min.js"></script>
 </head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+
+  .slider-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .siema {
+    margin: 0;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .controls {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+  }
+
+  button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    background: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  button:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .slider-container {
+      max-width: 100%;
+    }
+    
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 1rem 0.5rem;
+    }
+    
+    .controls {
+      margin-top: 1rem;
+    }
+    
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+  }
+</style>
 <body>
-    <div class="container">
-        <h1>精美写真集</h1>
-        <div class="gallery" id="gallery">
-            <!-- 使用占位图片API，实际使用时替换为真实图片URL -->
-            <div class="gallery-item" data-index="0">
-                <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png" alt="制服少女" loading="lazy">
-                <div class="gallery-item-info">
-                    <div class="gallery-item-title">制服少女</div>
-                    <div class="gallery-item-desc">清新唯美的制服写真</div>
-                </div>
-            </div>
-            <div class="gallery-item" data-index="1">
-                <img src="https://img.16k.club/mofish/2024-11-02/c6230e2bac86983776962aab4770c4de.webp" alt="夏日写真" loading="lazy">
-                <div class="gallery-item-info">
-                    <div class="gallery-item-title">夏日写真</div>
-                    <div class="gallery-item-desc">充满活力的夏日场景</div>
-                </div>
-            </div>
-            <!-- 添加更多图片项 -->
-        </div>
+  <div class="slider-container">
+    <div class="siema">
+      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png">
+      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png">
+      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png">
+      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png">
     </div>
+  </div>
+  
+  <div class="controls">
+    <button class="prev">Previous</button>
+    <button class="next">Next</button>
+  </div>
 
-    <div class="lightbox" id="lightbox">
-        <div class="lightbox-content">
-            <img src="" alt="" id="lightbox-img">
-            <div class="lightbox-info">
-                <h2 id="lightbox-title" class="gallery-item-title"></h2>
-                <p id="lightbox-desc" class="gallery-item-desc"></p>
-                <div class="lightbox-controls">
-                    <button class="lightbox-btn" id="prev-btn">上一张</button>
-                    <button class="lightbox-btn" id="zoom-btn">放大</button>
-                    <button class="lightbox-btn" id="next-btn">下一张</button>
-                </div>
-            </div>
-        </div>
-    </div>
+  <script>
+    const mySiema = new Siema({
+      duration: 200,
+      easing: 'ease-out',
+      perPage: 1,
+      startIndex: 0,
+      draggable: true,
+      threshold: 20,
+      loop: true,
+    });
 
-    <script>
-        const images = [
-            {
-                src: 'https://img.16k.club/mofish/2024-11-02/c6230e2bac86983776962aab4770c4de.webp',
-                title: '制服少女',
-                description: '清新唯美的制服写真'
-            },
-            {
-                src: 'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
-                title: '夏日写真',
-                description: '充满活力的夏日场景'
-            }
-            // 添加更多图片数据
-        ];
-
-        let currentIndex = 0;
-        let isZoomed = false;
-
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxTitle = document.getElementById('lightbox-title');
-        const lightboxDesc = document.getElementById('lightbox-desc');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const zoomBtn = document.getElementById('zoom-btn');
-
-        // 打开图片查看器
-        document.querySelectorAll('.gallery-item').forEach(item => {
-            item.addEventListener('click', () => {
-                currentIndex = parseInt(item.dataset.index);
-                updateLightbox();
-                lightbox.classList.add('active');
-            });
-        });
-
-        // 关闭图片查看器
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) {
-                lightbox.classList.remove('active');
-                isZoomed = false;
-                lightboxImg.style.transform = 'scale(1)';
-            }
-        });
-
-        // 更新图片查看器内容
-        function updateLightbox() {
-            const image = images[currentIndex];
-            lightboxImg.src = image.src;
-            lightboxTitle.textContent = image.title;
-            lightboxDesc.textContent = image.description;
-            
-            prevBtn.disabled = currentIndex === 0;
-            nextBtn.disabled = currentIndex === images.length - 1;
-        }
-
-        // 上一张/下一张
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateLightbox();
-            }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < images.length - 1) {
-                currentIndex++;
-                updateLightbox();
-            }
-        });
-
-        // 缩放功能
-        zoomBtn.addEventListener('click', () => {
-            isZoomed = !isZoomed;
-            lightboxImg.style.transform = isZoomed ? 'scale(1.5)' : 'scale(1)';
-            zoomBtn.textContent = isZoomed ? '缩小' : '放大';
-        });
-
-        // 键盘控制
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-            
-            switch(e.key) {
-                case 'ArrowLeft':
-                    if (currentIndex > 0) {
-                        currentIndex--;
-                        updateLightbox();
-                    }
-                    break;
-                case 'ArrowRight':
-                    if (currentIndex < images.length - 1) {
-                        currentIndex++;
-                        updateLightbox();
-                    }
-                    break;
-                case 'Escape':
-                    lightbox.classList.remove('active');
-                    isZoomed = false;
-                    lightboxImg.style.transform = 'scale(1)';
-                    break;
-            }
-        });
-    </script>
+    document.querySelector('.prev').addEventListener('click', () => mySiema.prev());
+    document.querySelector('.next').addEventListener('click', () => mySiema.next());
+  </script>
 </body>
 </html>
