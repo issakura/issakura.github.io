@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +27,6 @@
       width: 100%;
       max-width: 400px;
       margin: 0 auto;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
       border-radius: 10px;
       overflow: hidden;
     }
@@ -36,6 +35,7 @@
       width: 100%;
       height: auto;
       display: block;
+      pointer-events: none; /* 禁用图片的互动 */
     }
 
     h1 {
@@ -44,39 +44,27 @@
       margin-bottom: 1.5rem;
     }
 
+    .hint {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #4a90e2;
+      opacity: 0.7;
+    }
+
     .controls {
       margin-top: 1rem;
       display: flex;
       gap: 1rem;
+      justify-content: center;
     }
 
-    button {
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 25px;
-      background: #4a90e2;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-    }
-
-    button:hover {
-      background: #357abd;
-      transform: translateY(-2px);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
     @media (max-width: 480px) {
       h1 {
         font-size: 1.5rem;
       }
 
-      button {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
+      .hint {
+        font-size: 1rem;
       }
     }
   </style>
@@ -88,16 +76,15 @@
       <img src="https://cdn.10086.click/show/2024-12-26/4e317ede-b55c-4d11-a4a6-5799e10eea10.jpg" alt="Vertical Image 1">
       <img src="https://cdn.10086.click/show/2024-12-26/346492a0-c6f1-4052-be62-250fe96f08fe.jpg" alt="Vertical Image 2">
       <img src="https://cdn.10086.click/show/2024-12-26/835505e5-e3f1-4503-8f68-ec740fe8a432.jpg" alt="Vertical Image 3">
-        <img src="https://cdn.10086.click/show/2024-12-26/a97a559e-c5d2-404a-9273-11bbb453bf6c.jpg" alt=feel"}
+      <img src="https://cdn.10086.click/show/2024-12-26/a97a559e-c5d2-404a-9273-11bbb453bf6c.jpg" alt="Vertical Image 4">
     </div>
   </div>
 
-  <div class="controls">
-    <button class="prev">Previous</button>
-    <button class="next">Next</button>
+  <div class="hint">
+    <p>请滑动图片进行切换</p>
   </div>
 
-  <button onclick="window.location.href='index.html';" style="margin-top: 2rem;">Go to Horizontal Section</button>
+  <button onclick="window.location.href='index.html';" style="margin-top: 2rem;">去横向部分</button>
 
   <script>
     const mySiema = new Siema({
@@ -109,8 +96,6 @@
       threshold: 20,
       loop: true,
     });
-document.querySelector('.prev').addEventListener('click', () => mySiema.prev());
-    document.querySelector('.next').addEventListener('click', () => mySiema.next());
   </script>
 </body>
 </html>
