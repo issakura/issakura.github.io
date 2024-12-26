@@ -2,71 +2,86 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Image Slider</title>
   <script src="https://cdn.jsdelivr.net/npm/siema@1.5.1/dist/siema.min.js"></script>
   <style>
-  html, body {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  touch-action: none;
-}
-
-.siema {
-  touch-action: none;
-}
-
-.siema img {
-  user-select: none;
-  -webkit-user-drag: none;
-  pointer-events: none;
-}
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
+      overflow: hidden;
+      position: fixed;
       width: 100%;
-      min-height: 100vh;
+      height: 100%;
+      touch-action: none;
+    }
+
+    body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
       text-align: center;
+    }
+
+    .content-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     h1 {
       font-size: 2rem;
       color: #4a90e2;
-      margin-bottom: 1rem;
+      margin: 1rem 0;
+      flex-shrink: 0;
     }
 
     .slider-container {
       width: 100%;
       max-width: 800px;
-      margin: 2rem auto;
+      margin: 1rem auto;
       border-radius: 10px;
       overflow: hidden;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .siema {
+      touch-action: none;
     }
 
     .siema img {
       width: 100%;
       height: auto;
+      max-height: 80vh;
+      object-fit: contain;
       display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
     }
 
     .hint {
-      margin-top: 1rem;
       width: 100%;
       max-width: 800px;
       overflow: hidden;
       white-space: nowrap;
       position: relative;
+      height: 2rem;
+      margin: 0.5rem 0;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
     }
 
     .hint p {
@@ -75,6 +90,7 @@
       display: inline-block;
       padding-left: 100%;
       animation: scrollText 15s linear infinite;
+      line-height: 2rem;
     }
 
     @keyframes scrollText {
@@ -86,10 +102,6 @@
       }
     }
 
-    .vertical-section {
-      margin-top: 2rem;
-    }
-
     @media (max-width: 768px) {
       .slider-container {
         max-width: 100%;
@@ -97,16 +109,16 @@
     }
 
     @media (max-width: 480px) {
-      body {
-        padding: 1rem 0.5rem;
-      }
-
       h1 {
         font-size: 1.5rem;
       }
 
       .hint p {
         font-size: 1rem;
+      }
+
+      .content-wrapper {
+        padding: 0.5rem;
       }
     }
   </style>
@@ -148,7 +160,7 @@
       <img src="https://cdn.10086.click/show/2024-12-26/b8af1dfc-a6e7-49b3-ae57-d48777ccaff1.jpg" alt="Image">
     </div>
   </div>
-  <script>
+   <script>
     const mySiema = new Siema({
       duration: 200,
       easing: 'ease-out',
@@ -158,12 +170,16 @@
       threshold: 20,
       loop: true,
     });
+
     document.addEventListener('touchmove', function(e) {
-  e.preventDefault();
-}, { passive: false });
-document.addEventListener('dragstart', function(e) {
-  e.preventDefault();
-});
+      if (!e.target.closest('.content-wrapper')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+    });
   </script>
 </body>
 </html>
