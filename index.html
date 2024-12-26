@@ -180,6 +180,10 @@
     document.addEventListener('dragstart', function(e) {
       e.preventDefault();
     });
+    const intervalTime = 3000;
+setInterval(() => {
+  mySiema.next();
+}, intervalTime);
   </script>
 </body>
 </html>
