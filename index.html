@@ -181,6 +181,15 @@
       e.preventDefault();
     });
     const intervalTime = 3000;
+const siemaContainer = document.querySelector('.siema');
+siemaContainer.addEventListener('mouseenter', () => {
+  clearInterval(timer);
+});
+siemaContainer.addEventListener('mouseleave', () => {
+  timer = setInterval(() => {
+    mySiema.next();
+  }, intervalTime);
+});
 setInterval(() => {
   mySiema.next();
 }, intervalTime);
