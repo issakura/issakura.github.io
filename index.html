@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Confetti and Image Slider</title>
+  <title>Sakura's Collection</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/siema@1.5.1/dist/siema.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -14,161 +13,215 @@
     }
 
     body {
-      width: 100%;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
-      overflow: hidden;
-    }
-
-    .slider-container {
-      width: 100%;
-      max-width: 800px;
-      margin: 2rem auto;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-      border-radius: 10px;
-      overflow: hidden;
+      justify-content: center;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       position: relative;
     }
 
-    .siema {
-      margin: 0;
-    }
-
-    img {
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: auto;
-      display: block;
+      height: 100%;
+      z-index: -1;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: opacity 1s ease;
     }
 
-    .fullscreen-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 0.6rem 1.2rem;
-      font-size: 1rem;
+    @media (min-width: 768px) {
+      .background {
+        background-image: url('https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png');
+      }
+    }
+
+    @media (max-width: 767px) {
+      .background {
+        background-image: url('https://cdn.10086.click/show/2024-12-26/835505e5-e3f1-4503-8f68-ec740fe8a432.jpg');
+      }
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    .content {
+      text-align: center;
+      z-index: 1;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 2s ease;
+    }
+
+    .title {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff69b4, 0 0 40px #ff69b4;
+      }
+      to {
+        text-shadow: 0 0 20px #fff, 0 0 30px #ff69b4, 0 0 40px #ff69b4, 0 0 50px #ff69b4;
+      }
+    }
+
+    .marquee {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .marquee span {
+      display: inline-block;
+      animation: marquee 20s linear infinite;
+      font-size: 1.2rem;
+      color: #ffd1dc;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .enter-button {
+      display: inline-block;
+      padding: 15px 30px;
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      color: white;
+      background: linear-gradient(45deg, #ff69b4, #ff1493);
       border: none;
       border-radius: 25px;
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
       cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
     }
 
-    .fullscreen-btn:hover {
-      background: rgba(0, 0, 0, 0.8);
+    .enter-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+      background: linear-gradient(45deg, #ff1493, #ff69b4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 768px) {
-      .slider-container {
-        max-width: 100%;
+      .title {
+        font-size: 2.5rem;
+      }
+      .content {
+        padding: 1.5rem;
+        margin: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- 图片轮播容器 -->
-  <div class="slider-container">
-    <div class="siema"></div>
-    <button class="fullscreen-btn">全屏</button>
+  <div class="background"></div>
+  <div class="overlay"></div>
+  
+  <div class="content">
+    <h1 class="title">Sakura's Collection</h1>
+    <div class="marquee">
+      <span>Welcome to Sakura's  collection! The content on this site complies with U.S. law, so the presence of NSFW content is a normal occurrence.If there is a difference in your stance, please leave immediately.      </span>
+    </div>
+    <a href="sakura.html" class="enter-button">Enter Collection</a>
   </div>
-
   <script>
-    // 图片 URL 列表
-    const imageUrls = [
-      'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
-      'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
-      'https://bu.dusays.com/2024/11/04/6728581ed03d6.jpg',
-    ];
-
-    const siemaContainer = document.querySelector('.siema');
-    const fullscreenButton = document.querySelector('.fullscreen-btn');
-    const sliderContainer = document.querySelector('.slider-container');
-
-    // 动态加载图片到滑块
-    imageUrls.forEach(url => {
-      const img = document.createElement('img');
-      img.src = url;
-      img.alt = 'Slider Image';
-      siemaContainer.appendChild(img);
-    });
-
-    // 初始化 Siema
-    const mySiema = new Siema({
-      duration: 200,
-      easing: 'ease-out',
-      perPage: 1,
-      startIndex: 0,
-      draggable: true,
-      threshold: 20,
-      loop: true,
-    });
-
-    // 自动播放定时器
-    const intervalTime = 3000;
-    let timer;
-
-    function stopTimer() {
-      clearInterval(timer);
-    }
-
-    function startTimer() {
-      clearInterval(timer);
-      timer = setInterval(() => {
-        mySiema.next();
-      }, intervalTime);
-    }
-
-    siemaContainer.addEventListener('mouseenter', stopTimer);
-    siemaContainer.addEventListener('mouseleave', startTimer);
-    siemaContainer.addEventListener('touchstart', stopTimer);
-    siemaContainer.addEventListener('touchend', startTimer);
-    startTimer();
-
-    // 全屏功能
-    fullscreenButton.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        sliderContainer.requestFullscreen().catch(err => {
-          console.error(`Error attempting to enable full-screen mode: ${err.message}`);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    });
-
-    // 彩带效果
-    const duration = 30 * 1000; // 30 秒
-    const end = Date.now() + duration;
-    const colors = ['#bb0000', '#ffffff'];
-
     function launchConfetti() {
-      // 左侧
+      // 左侧礼花
       confetti({
-        particleCount: 5,
+        particleCount: 15,
         angle: 60,
-        spread: 55,
+        spread: 60,
         origin: { x: 0 },
-        colors: colors,
+        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
+        ticks: 300,
+        gravity: 0.8,
+        scalar: 1.2,
+        drift: 0,
+        shapes: ['circle', 'square']
       });
-      // 右侧
+      
+      // 右侧礼花
       confetti({
-        particleCount: 5,
+        particleCount: 15,
         angle: 120,
-        spread: 55,
+        spread: 60,
         origin: { x: 1 },
-        colors: colors,
+        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
+        ticks: 300,
+        gravity: 0.8,
+        scalar: 1.2,
+        drift: 0,
+        shapes: ['circle', 'square']
+      });
+
+      // 中间礼花
+      confetti({
+        particleCount: 10,
+        angle: 90,
+        spread: 45,
+        origin: { x: 0.5, y: 0.7 },
+        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
+        ticks: 300,
+        gravity: 0.8,
+        scalar: 1.2,
+        drift: 0,
+        shapes: ['circle', 'square']
       });
     }
 
-    (function frame() {
-      launchConfetti();
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    })();
+    // 更频繁地发射礼花
+    setInterval(launchConfetti, 200);
+
+    // 鼠标悬停在按钮上时的特效
+    document.querySelector('.enter-button').addEventListener('mouseenter', () => {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
+        ticks: 400,
+        shapes: ['star'],
+        scalar: 1.4
+      });
+    });
+
+    // 优化滚动字幕
+    const marquee = document.querySelector('.marquee span');
+    marquee.addEventListener('animationend', () => {
+      marquee.style.animation = 'none';
+      setTimeout(() => {
+        marquee.style.animation = 'marquee 20s linear infinite';
+      }, 10);
+    });
   </script>
 </body>
 </html>
