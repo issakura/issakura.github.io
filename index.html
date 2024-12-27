@@ -107,7 +107,7 @@
         let mySiema = null;
         async function loadImages() {
             try {
-                const response = await fetch('images.json');
+                const response = await fetch('sakura.json');
                 if (!response.ok) throw new Error('Failed to load images');
                 const data = await response.json();
                 siemaContainer.innerHTML = '';
