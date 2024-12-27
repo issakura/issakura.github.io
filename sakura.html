@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Gallery</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+      background: linear-gradient(-45deg, #ffe6e6, #ffd1dc, #f8bbd0, #fce4ec);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .section {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .image-container img {
+      max-width: 95%;
+      max-height: 95vh;
+      object-fit: contain;
+      display: block;
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.3);
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      font-family: Arial, sans-serif;
+      font-weight: 500;
+    }
+
+    .fullscreen-btn:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    #fp-nav ul li a span {
+      background: rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    #fp-nav ul li a.active span {
+      background: rgba(0, 0, 0, 0.6);
+      transform: scale(1.2);
+    }
+
+    .loading-placeholder {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 1.2rem;
+      font-family: Arial, sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .fullscreen-btn {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .image-container img {
+        max-width: 98%;
+        max-height: 98vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="fullpage">
+    <div class="loading-placeholder section">
+      Loading images...
+    </div>
+  </div>
+  <button class="fullscreen-btn">全屏</button>
+
+  <script>
+    const imageUrls = [
+      'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
+      'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
+      'https://bu.dusays.com/2024/11/04/6728581ed03d6.jpg',
+      "https://cdn.10086.click/show/2024-12-26/4e317ede-b55c-4d11-a4a6-5799e10eea10.jpg",
+      "https://cdn.10086.click/show/2024-12-26/346492a0-c6f1-4052-be62-250fe96f08fe.jpg",
+      "https://cdn.10086.click/show/2024-12-26/835505e5-e3f1-4503-8f68-ec740fe8a432.jpg",
+      "https://cdn.10086.click/show/2024-12-26/a97a559e-c5d2-404a-9273-11bbb453bf6c.jpg",
+      "https://cdn.10086.click/show/2024-12-26/1227435a-f7a0-48bf-9624-034d5d9dac26.jpg",
+      "https://cdn.10086.click/show/2024-12-26/7f8cf05b-051d-4d4c-975f-4ed66f4fc8c8.jpg",
+      "https://cdn.10086.click/show/2024-12-26/d6e2b698-976f-45c6-958a-221f62f74fb0.jpg",
+      "https://cdn.10086.click/show/2024-12-26/50226a13-f682-4c9c-9247-880c88825292.jpg",
+      "https://cdn.10086.click/show/2024-12-26/617baa1f-e85f-4d88-b715-64f53ad2e8b0.jpg",
+      "https://cdn.10086.click/show/2024-12-26/b2454b31-4336-471d-9ea4-58d6b16ca740.jpg",
+      "https://cdn.10086.click/show/2024-12-26/f0a608f5-fafc-4eb1-b2e4-12905c365d5b.jpg",
+      "https://cdn.10086.click/show/2024-12-26/d5c76c92-c71f-426c-9161-2bef03d60f09.jpg",
+      "https://cdn.10086.click/show/2024-12-26/11973c63-15cc-4dd8-aa9d-d2ea38ab212f.jpg",
+      "https://cdn.10086.click/show/2024-12-26/d37089dd-b6b4-4bb2-98d3-36d99d857e3d.jpg",
+      "https://cdn.10086.click/show/2024-12-26/a118fb91-1638-4298-b463-52e85ad1831d.jpg",
+      "https://cdn.10086.click/show/2024-12-26/91f4e1b4-ab45-445e-9fac-c5eb45d2b8d4.jpg",
+      "https://cdn.10086.click/show/2024-12-26/9619c78a-76a6-4689-adbc-c7f766bf25d0.jpg",
+      "https://cdn.10086.click/show/2024-12-26/f851162e-0ff7-44c9-9449-dba649adee0c.jpg",
+      "https://cdn.10086.click/show/2024-12-26/56510c1a-203e-4cd4-9748-c404093e2ebc.jpg",
+      "https://cdn.10086.click/show/2024-12-26/d9749ce5-4a26-4602-9cd7-62614dca3e8b.jpg",
+      "https://cdn.10086.click/show/2024-12-26/72f35dca-fc6e-4c3a-b385-d076cd610218.jpg",
+      "https://cdn.10086.click/show/2024-12-26/6a26ef3c-70fe-427d-bd49-9da999d706e4.jpg",
+      "https://cdn.10086.click/show/2024-12-26/d5308ca7-d44e-46bc-be03-d5cb8ba8bdb3.jpg",
+      "https://cdn.10086.click/show/2024-12-26/7931fd84-6e7a-4f2a-b720-a6d4230ca71d.jpg",
+      "https://cdn.10086.click/show/2024-12-26/b4a42bc1-464a-4836-a858-199c41a664f9.jpg"
+    ];
+
+    const fullpageContainer = document.getElementById('fullpage');
+    const fullscreenButton = document.querySelector('.fullscreen-btn');
+
+    // 预加载图片并创建sections
+    Promise.all(imageUrls.map(url => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve({ url, success: true });
+        img.onerror = () => resolve({ url: 'https://via.placeholder.com/800x600?text=Image+Not+Found', success: false });
+        img.src = url;
+      });
+    })).then(results => {
+      // 清除加载占位符
+      fullpageContainer.innerHTML = '';
+      
+      // 创建图片sections
+      results.forEach(({ url }) => {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const container = document.createElement('div');
+        container.className = 'image-container';
+        
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Gallery Image';
+        
+        container.appendChild(img);
+        section.appendChild(container);
+        fullpageContainer.appendChild(section);
+      });
+
+      // 初始化 fullPage.js
+      new fullpage('#fullpage', {
+        autoScrolling: true,
+        scrollHorizontally: true,
+        navigation: true,
+        navigationPosition: 'right',
+        showActiveTooltip: false,
+        slidesNavigation: true,
+        controlArrows: true,
+        loopBottom: true,
+        loopTop: true,
+        keyboardScrolling: true,
+        animateAnchor: true,
+        recordHistory: false,
+        lazyLoading: true,
+        scrollingSpeed: 700,
+        verticalCentered: true,
+        afterLoad: function(origin, destination, direction) {
+          launchConfetti();
+        }
+      });
+    });
+
+    // 全屏功能
+    fullscreenButton.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // 彩带效果
+    function launchConfetti() {
+      const colors = ['#bb0000', '#ffffff'];
+      // 左侧
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors,
+      });
+      // 右侧
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors,
+      });
+    }
+  </script>
+</body>
+</html>
