@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Slider</title>
+  <title>Confetti and Image Slider</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/siema@1.5.1/dist/siema.min.js"></script>
   <style>
     * {
@@ -20,12 +21,13 @@
       flex-direction: column;
       align-items: center;
       padding: 2rem 1rem;
+      overflow: hidden;
     }
 
     .slider-container {
       width: 100%;
       max-width: 800px;
-      margin: 0 auto;
+      margin: 2rem auto;
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
       border-radius: 10px;
       overflow: hidden;
@@ -65,15 +67,10 @@
         max-width: 100%;
       }
     }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 1rem 0.5rem;
-      }
-    }
   </style>
 </head>
 <body>
+  <!-- 图片轮播容器 -->
   <div class="slider-container">
     <div class="siema"></div>
     <button class="fullscreen-btn">全屏</button>
@@ -82,8 +79,6 @@
   <script>
     // 图片 URL 列表
     const imageUrls = [
-      'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
-      'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
       'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
       'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
       'https://bu.dusays.com/2024/11/04/6728581ed03d6.jpg',
@@ -143,6 +138,37 @@
         document.exitFullscreen();
       }
     });
+
+    // 彩带效果
+    const duration = 30 * 1000; // 30 秒
+    const end = Date.now() + duration;
+    const colors = ['#bb0000', '#ffffff'];
+
+    function launchConfetti() {
+      // 左侧
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors,
+      });
+      // 右侧
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors,
+      });
+    }
+
+    (function frame() {
+      launchConfetti();
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    })();
   </script>
 </body>
 </html>
