@@ -1,201 +1,177 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Image Slider</title>
-  <script src="https://cdn.jsdelivr.net/npm/siema@1.5.1/dist/siema.min.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Slider</title>
+    <script src="https://cdn.jsdelivr.net/npm/siema@1.5.1/dist/siema.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    html, body {
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      touch-action: none;
-    }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
 
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
+        .slider-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
 
-    .content-wrapper {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
+        .siema {
+            margin: 0;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    h1 {
-      font-size: 2rem;
-      color: #4a90e2;
-      margin: 1rem 0;
-      flex-shrink: 0;
-    }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-size: 1.2rem;
+        }
 
-    .slider-container {
-      width: 100%;
-      max-width: 800px;
-      margin: 1rem auto;
-      border-radius: 10px;
-      overflow: hidden;
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-    }
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
 
-    .siema {
-      touch-action: none;
-    }
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 25px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            z-index: 10;
+        }
 
-    .siema img {
-      width: 100%;
-      height: auto;
-      max-height: 80vh;
-      object-fit: contain;
-      display: block;
-      user-select: none;
-      -webkit-user-drag: none;
-      pointer-events: none;
-    }
+        .fullscreen-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
 
-    .hint {
-      width: 100%;
-      max-width: 800px;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
-      height: 2rem;
-      margin: 0.5rem 0;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 5px;
-    }
+        .error-message {
+            color: #ff4444;
+            text-align: center;
+            padding: 1rem;
+        }
 
-    .hint p {
-      font-size: 1.2rem;
-      color: #4a90e2;
-      display: inline-block;
-      padding-left: 100%;
-      animation: scrollText 15s linear infinite;
-      line-height: 2rem;
-    }
+        @media (max-width: 768px) {
+            .slider-container {
+                max-width: 100%;
+            }
+        }
 
-    @keyframes scrollText {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .slider-container {
-        max-width: 100%;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      .hint p {
-        font-size: 1rem;
-      }
-
-      .content-wrapper {
-        padding: 0.5rem;
-      }
-    }
-  </style>
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Sakura's Collection</h1>
-  <div class="hint">
-    <p>Welcome to Sakura's website ,Swiping the picture to switch,we are obey USA law ,Therefore, the contents of this site are legal!</p>
-  </div>
-  <div class="slider-container">
-    <div class="siema">
-      <img src="https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png" alt="l">
-      <img src="https://cdn.10086.click/show/2024-12-26/4e317ede-b55c-4d11-a4a6-5799e10eea10.jpg" alt="i">
-      <img src="https://cdn.10086.click/show/2024-12-26/346492a0-c6f1-4052-be62-250fe96f08fe.jpg" alt="k">
-      <img src="https://cdn.10086.click/show/2024-12-26/835505e5-e3f1-4503-8f68-ec740fe8a432.jpg" alt="e">
-      <img src="https://cdn.10086.click/show/2024-12-26/a97a559e-c5d2-404a-9273-11bbb453bf6c.jpg" alt="H">
-      <img src="https://cdn.10086.click/show/2024-12-26/1227435a-f7a0-48bf-9624-034d5d9dac26.jpg" alt="H0">
-      <img src="https://cdn.10086.click/show/2024-12-26/7f8cf05b-051d-4d4c-975f-4ed66f4fc8c8.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/d6e2b698-976f-45c6-958a-221f62f74fb0.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/50226a13-f682-4c9c-9247-880c88825292.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/617baa1f-e85f-4d88-b715-64f53ad2e8b0.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/b2454b31-4336-471d-9ea4-58d6b16ca740.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/f0a608f5-fafc-4eb1-b2e4-12905c365d5b.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/d5c76c92-c71f-426c-9161-2bef03d60f09.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/11973c63-15cc-4dd8-aa9d-d2ea38ab212f.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/d37089dd-b6b4-4bb2-98d3-36d99d857e3d.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/a118fb91-1638-4298-b463-52e85ad1831d.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/91f4e1b4-ab45-445e-9fac-c5eb45d2b8d4.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/9619c78a-76a6-4689-adbc-c7f766bf25d0.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/f851162e-0ff7-44c9-9449-dba649adee0c.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/56510c1a-203e-4cd4-9748-c404093e2ebc.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/d9749ce5-4a26-4602-9cd7-62614dca3e8b.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/72f35dca-fc6e-4c3a-b385-d076cd610218.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/6a26ef3c-70fe-427d-bd49-9da999d706e4.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/d5308ca7-d44e-46bc-be03-d5cb8ba8bdb3.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/7931fd84-6e7a-4f2a-b720-a6d4230ca71d.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/b4a42bc1-464a-4836-a858-199c41a664f9.jpg" alt="Image">
-      <img src="https://cdn.10086.click/show/2024-12-26/b8af1dfc-a6e7-49b3-ae57-d48777ccaff1.jpg" alt="Image">
+    <div class="slider-container">
+        <div class="siema">
+            <div class="loading">Loading images...</div>
+        </div>
+        <button class="fullscreen-btn">全屏</button>
     </div>
-  </div>
-   <script>
-    const mySiema = new Siema({
-      duration: 200,
-      easing: 'ease-out',
-      perPage: 1,
-      startIndex: 0,
-      draggable: true,
-      threshold: 20,
-      loop: true,
-    });
-    const intervalTime = 3000;
-let timer;
-document.addEventListener('touchmove', function(e) {
-  if (!e.target.closest('.content-wrapper')) {
-    e.preventDefault();
-  }
-}, { passive: false });
+    <script>
+        const siemaContainer = document.querySelector('.siema');
+        const fullscreenButton = document.querySelector('.fullscreen-btn');
+        const sliderContainer = document.querySelector('.slider-container');
+        let mySiema = null;
+        async function loadImages() {
+            try {
+                const response = await fetch('images.json');
+                if (!response.ok) throw new Error('Failed to load images');
+                const data = await response.json();
+                siemaContainer.innerHTML = '';
+                const imagePromises = data.images.map(image => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => resolve(img);
+                        img.onerror = reject;
+                        img.src = image.url;
+                        img.alt = image.alt;
+                        siemaContainer.appendChild(img);
+                    });
+                });
 
-document.addEventListener('dragstart', function(e) {
-  e.preventDefault();
-});
+                await Promise.all(imagePromises);
+                initializeSlider();
+            } catch (error) {
+                console.error('Error:', error);
+                siemaContainer.innerHTML = '<div class="error-message">Failed to load images. Please try again later.</div>';
+            }
+        }
 
-const siemaContainer = document.querySelector('.siema');
-siemaContainer.addEventListener('mouseenter', stopTimer);
-siemaContainer.addEventListener('mouseleave', startTimer);
-siemaContainer.addEventListener('touchstart', stopTimer);
-siemaContainer.addEventListener('touchend', startTimer);
-function stopTimer() {
-  clearInterval(timer);
-}
-function startTimer() {
-  clearInterval(timer);
-  timer = setInterval(() => {
-    mySiema.next();
-  }, intervalTime);
-}
-startTimer();
-</script>
+        function initializeSlider() {
+            mySiema = new Siema({
+                duration: 200,
+                easing: 'ease-out',
+                perPage: 1,
+                startIndex: 0,
+                draggable: true,
+                threshold: 20,
+                loop: true,
+            });
+
+            const intervalTime = 3000;
+            let timer;
+
+            function stopTimer() {
+                clearInterval(timer);
+            }
+
+            function startTimer() {
+                clearInterval(timer);
+                timer = setInterval(() => {
+                    mySiema.next();
+                }, intervalTime);
+            }
+
+            siemaContainer.addEventListener('mouseenter', stopTimer);
+            siemaContainer.addEventListener('mouseleave', startTimer);
+            siemaContainer.addEventListener('touchstart', stopTimer);
+            siemaContainer.addEventListener('touchend', startTimer);
+            startTimer();
+        }
+
+        fullscreenButton.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                sliderContainer.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+        loadImages();
+    </script>
 </body>
 </html>
