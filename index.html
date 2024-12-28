@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sakura's Collection</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -16,13 +17,11 @@
       margin: 0;
       height: 100vh;
       overflow: hidden;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      position: relative;
     }
 
     .background {
@@ -56,170 +55,56 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0);
+      background: rgba(0, 0, 0, 0.4);
       z-index: -1;
-    }
-
-    .content {
-      text-align: center;
-      z-index: 1;
-      padding: 2rem;
-      background: rgba(0, 0, 0, 0);
-      border-radius: 20px;
-      animation: fadeIn 2s ease;
-    }
-
-    .title {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from {
-        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff69b4, 0 0 40px #ff69b4;
-      }
-      to {
-        text-shadow: 0 0 20px #fff, 0 0 30px #ff69b4, 0 0 40px #ff69b4, 0 0 50px #ff69b4;
-      }
-    }
-
-    .marquee {
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      margin: 1rem 0;
-    }
-
-    .marquee span {
-      display: inline-block;
-      animation: marquee 20s linear infinite;
-      font-size: 1.2rem;
-      color: #ffd1dc;
-    }
-
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    .enter-button {
-      display: inline-block;
-      padding: 15px 30px;
-      margin-top: 2rem;
-      font-size: 1.2rem;
-      color: white;
-      background: linear-gradient(45deg, #ff69b4, #ff1493);
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
-    }
-
-    .enter-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
-      background: linear-gradient(45deg, #ff1493, #ff69b4);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 768px) {
-      .title {
-        font-size: 2.5rem;
-      }
-      .content {
-        padding: 1.5rem;
-        margin: 1rem;
-      }
     }
   </style>
 </head>
 <body>
   <div class="background"></div>
   <div class="overlay"></div>
-  
-  <div class="content">
-    <h1 class="title">Sakura</h1>
-    <div class="marquee">
-      <span>Welcome to Sakura's  collection! The content on this site complies with U.S. law, so the presence of NSFW content is a normal occurrence.If there is a difference in your stance, please leave immediately.      </span>
-    </div>
-    <a href="sakura.html" class="enter-button">Enter Collection</a>
-  </div>
+
   <script>
-    function launchConfetti() {
-      // 左侧礼花
-      confetti({
-        particleCount: 15,
-        angle: 60,
-        spread: 60,
-        origin: { x: 0 },
-        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
-        ticks: 300,
-        gravity: 0.8,
-        scalar: 1.2,
-        drift: 0,
-        shapes: ['circle', 'square']
-      });
+    let clickCount = 0;
+    const REQUIRED_CLICKS = 12;
+
+    document.addEventListener('click', (e) => {
+      clickCount++;
       
-      // 右侧礼花
-      confetti({
-        particleCount: 15,
-        angle: 120,
-        spread: 60,
-        origin: { x: 1 },
-        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
-        ticks: 300,
-        gravity: 0.8,
-        scalar: 1.2,
-        drift: 0,
-        shapes: ['circle', 'square']
-      });
+      // Launch confetti
+      for(let i = 0; i < clickCount; i++) {
+        const angle = gsap.utils.random(50, 130);
+        confetti({
+          particleCount: gsap.utils.random(20, 40),
+          angle: angle,
+          spread: gsap.utils.random(55, 80),
+          origin: { 
+            x: e.clientX / window.innerWidth, 
+            y: e.clientY / window.innerHeight 
+          },
+          colors: ['#ff69b4', '#ffd1dc', '#ff1493'],
+          gravity: gsap.utils.random(0.6, 1.2),
+          scalar: gsap.utils.random(0.8, 1.5)
+        });
+      }
 
-      // 中间礼花
-      confetti({
-        particleCount: 10,
-        angle: 90,
-        spread: 45,
-        origin: { x: 0.5, y: 0.7 },
-        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
-        ticks: 300,
-        gravity: 0.8,
-        scalar: 1.2,
-        drift: 0,
-        shapes: ['circle', 'square']
-      });
-    }
-
-    // 更频繁地发射礼花
-    setInterval(launchConfetti, 200);
-
-    // 鼠标悬停在按钮上时的特效
-    document.querySelector('.enter-button').addEventListener('mouseenter', () => {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#ff69b4', '#ffffff', '#ffd1dc', '#ff1493'],
-        ticks: 400,
-        shapes: ['star'],
-        scalar: 1.4
-      });
+      // Check for redirect
+      if (clickCount >= REQUIRED_CLICKS) {
+        gsap.to('body', {
+          duration: 1,
+          opacity: 0,
+          onComplete: () => {
+            window.location.href = 'sakura.html';
+          }
+        });
+      }
     });
 
-    // 优化滚动字幕
-    const marquee = document.querySelector('.marquee span');
-    marquee.addEventListener('animationend', () => {
-      marquee.style.animation = 'none';
-      setTimeout(() => {
-        marquee.style.animation = 'marquee 20s linear infinite';
-      }, 10);
+    // Initial animation
+    gsap.from('.background', {
+      duration: 2,
+      opacity: 0,
+      ease: 'power2.out'
     });
   </script>
 </body>
