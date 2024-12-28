@@ -117,16 +117,27 @@
 
       // 初始化 fullPage.js
       new fullpage('#fullpage', {
-        autoScrolling: true,
-        navigation: true,
-        loopBottom: true,
-        lazyLoading: true,
-        scrollingSpeed: 700,
-        afterLoad: function(origin, destination, direction) {
-          launchConfetti();
-        }
-      });
-    });
+  autoScrolling: true,
+  scrollHorizontally: true,
+  navigation: true,
+  navigationPosition: 'right',
+  showActiveTooltip: false,
+  slidesNavigation: true,
+  controlArrows: true,
+  loopBottom: true,
+  loopTop: true,
+  keyboardScrolling: true,
+  animateAnchor: true,
+  recordHistory: false,
+  lazyLoading: true,
+  scrollingSpeed: 700,
+  verticalCentered: true,
+  credits: { enabled: false }, // 关闭底部标志
+  afterLoad: function(origin, destination, direction) {
+    launchConfetti();
+  }
+});
+
 
     // 彩带效果
     function launchConfetti() {
