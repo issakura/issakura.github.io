@@ -3,47 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Fullscreen Gallery</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.14/fullpage.min.css">
+  <title>sakura</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"
+  />
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
     }
-    .section {
-      text-align: center;
+
+    .swiper {
+      width: 100%;
+      height: 100vh;
+    }
+
+    .swiper-slide {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .image-container {
-      width: 80%;
-      max-width: 800px;
-      margin: auto;
+
+    .swiper-slide img {
+      width: auto;
+      max-width: 90%;
+      height: auto;
+      max-height: 90%;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      transition: transform 0.5s ease;
       cursor: pointer;
     }
-    .image-container img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s;
+
+    .swiper-slide img:hover {
+      transform: scale(1.1);
     }
-    .image-container img:hover {
-      transform: scale(1.05);
+
+    .swiper-pagination {
+      bottom: 20px;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #fff;
+    }
+
+    .fullscreen {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+    }
+
+    .fullscreen img {
+      width: auto;
+      max-width: 90%;
+      height: auto;
+      max-height: 90%;
     }
   </style>
 </head>
 <body>
-  <div id="fullpage">
-    <div class="section">Loading...</div>
+  <div class="swiper">
+    <div class="swiper-wrapper" id="swiper-wrapper">
+      <!-- Slides will be dynamically added here -->
+    </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.14/fullpage.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Fullscreen View -->
+  <div class="fullscreen" id="fullscreen">
+    <img src="" alt="Fullscreen View" />
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
   <script>
     const imageUrls = [
-     'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
+      'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
       'https://hv.z.wiki/autoupload/20241223/EWiF/5840X3893/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%88%B6%E6%9C%8D-%E5%B0%91%E5%A5%B3.png',
       'https://bu.dusays.com/2024/11/04/6728581ed03d6.jpg',
       "https://cdn.10086.click/show/2024-12-26/4e317ede-b55c-4d11-a4a6-5799e10eea10.jpg",
@@ -73,90 +119,52 @@
       "https://cdn.10086.click/show/2024-12-26/b4a42bc1-464a-4836-a858-199c41a664f9.jpg"
     ];
 
-    const fullpageContainer = document.getElementById('fullpage');
+    // Dynamically create slides
+    const swiperWrapper = document.getElementById("swiper-wrapper");
+    imageUrls.forEach((url) => {
+      const slide = document.createElement("div");
+      slide.className = "swiper-slide";
+      slide.innerHTML = `<img src="${url}" alt="Image" />`;
+      swiperWrapper.appendChild(slide);
+    });
 
-    // 预加载图片并创建 sections
-    Promise.all(imageUrls.map(url => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve({ url, success: true });
-        img.onerror = () => resolve({ url: 'https://via.placeholder.com/800x600?text=Image+Not+Found', success: false });
-        img.src = url;
+    const swiper = new Swiper('.swiper', {
+      loop: true,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      effect: 'coverflow',
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: 'auto',
+      coverflowEffect: {
+        rotate: 50,
+        stretch: 0,
+        depth: 100,
+        modifier: 1,
+        slideShadows: true,
+      },
+    });
+
+    // Fullscreen functionality
+    const fullscreen = document.getElementById('fullscreen');
+    const fullscreenImg = fullscreen.querySelector('img');
+
+    document.querySelectorAll('.swiper-slide img').forEach((img) => {
+      img.addEventListener('click', () => {
+        fullscreen.style.display = 'flex';
+        fullscreenImg.src = img.src;
       });
-    })).then(results => {
-      // 清除加载占位符
-      fullpageContainer.innerHTML = '';
+    });
 
-      // 创建图片 sections
-      results.forEach(({ url }) => {
-        const section = document.createElement('div');
-        section.className = 'section';
-
-        const container = document.createElement('div');
-        container.className = 'image-container';
-
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = 'Gallery Image';
-
-        container.appendChild(img);
-        section.appendChild(container);
-        fullpageContainer.appendChild(section);
-
-        // 添加点击事件，使图片进入全屏
-        img.addEventListener('click', () => {
-          if (!document.fullscreenElement) {
-            container.requestFullscreen().catch(err => {
-              console.error(`Error attempting to enable full-screen mode: ${err.message}`);
-            });
-          } else {
-            document.exitFullscreen();
-          }
-        });
-      });
-
-      // 初始化 fullPage.js
-      new fullpage('#fullpage', {
-  autoScrolling: true,
-  scrollHorizontally: true,
-  navigation: true,
-  navigationPosition: 'right',
-  showActiveTooltip: false,
-  slidesNavigation: true,
-  controlArrows: true,
-  loopBottom: true,
-  loopTop: true,
-  keyboardScrolling: true,
-  animateAnchor: true,
-  recordHistory: false,
-  lazyLoading: true,
-  scrollingSpeed: 700,
-  verticalCentered: true,
-  credits: { enabled: false }, // 关闭底部标志
-  afterLoad: function(origin, destination, direction) {
-    launchConfetti();
-  }
-});
-
-
-    // 彩带效果
-    function launchConfetti() {
-      const colors = ['#bb0000', '#ffffff'];
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors,
-      });
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors,
-      });
-    }
+    fullscreen.addEventListener('click', () => {
+      fullscreen.style.display = 'none';
+    });
   </script>
 </body>
 </html>
