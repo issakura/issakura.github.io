@@ -65,6 +65,12 @@
             color: #ffdd57;
             font-weight: bold;
         }
+
+        .error-message {
+            font-size: 1.5rem;
+            color: #ff4d4d;
+            display: none; /* 默认隐藏 */
+        }
     </style>
     <!-- 引入 Anime.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
@@ -72,6 +78,7 @@
 <body>
     <div class="container">
         <h1 id="main-title">2025年目标计划</h1>
+        <div class="error-message" id="error-message">您的 IP 地址未被允许访问此页面。</div>
         <ul class="todo-list" id="todo-list">
             <li class="todo-item">通过<span class="highlight">CET-4</span>考试</li>
             <li class="todo-item">通过<span class="highlight">CET-6</span>考试</li>
@@ -82,37 +89,63 @@
     </div>
 
     <script>
-        // 页面加载后的动画
-        document.addEventListener('DOMContentLoaded', function () {
-            // 标题动画
-            anime({
-                targets: '#main-title',
-                opacity: [0, 1],
-                translateY: [-20, 0],
-                duration: 1000,
-                easing: 'easeOutQuad'
-            });
+        // 允许的 IP 地址
+        const ALLOWED_IP = '138.199.60.187';
 
-            // 任务列表动画
-            anime({
-                targets: '.todo-item',
-                opacity: [0, 1],
-                translateY: [20, 0],
-                delay: anime.stagger(300), // 每个任务延迟300ms
-                duration: 800,
-                easing: 'easeOutQuad'
-            });
+        // 获取用户 IP 并检查权限
+        async function checkIP() {
+            try {
+                // 获取用户 IP
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                const userIP = data.ip;
 
-            // 任务高亮动画
-            anime({
-                targets: '.highlight',
-                color: ['#ffdd57', '#ff8c42'],
-                duration: 2000,
-                direction: 'alternate',
-                loop: true,
-                easing: 'easeInOutQuad'
-            });
-        });
+                // 检查 IP 是否允许访问
+                if (userIP === ALLOWED_IP) {
+                    // 允许访问，显示内容
+                    document.getElementById('error-message').style.display = 'none';
+                    document.getElementById('todo-list').style.display = 'block';
+
+                    // 页面加载后的动画
+                    anime({
+                        targets: '#main-title',
+                        opacity: [0, 1],
+                        translateY: [-20, 0],
+                        duration: 1000,
+                        easing: 'easeOutQuad'
+                    });
+
+                    anime({
+                        targets: '.todo-item',
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        delay: anime.stagger(300), // 每个任务延迟300ms
+                        duration: 800,
+                        easing: 'easeOutQuad'
+                    });
+
+                    anime({
+                        targets: '.highlight',
+                        color: ['#ffdd57', '#ff8c42'],
+                        duration: 2000,
+                        direction: 'alternate',
+                        loop: true,
+                        easing: 'easeInOutQuad'
+                    });
+                } else {
+                    // 禁止访问，显示错误信息
+                    document.getElementById('error-message').style.display = 'block';
+                    document.getElementById('todo-list').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('error-message').textContent = '无法检查 IP 访问权限。';
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        // 页面加载时检查 IP
+        checkIP();
     </script>
 </body>
 </html>
