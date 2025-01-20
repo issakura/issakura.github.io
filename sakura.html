@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenAI Chat</title>
+    <title>DeepSeek Chat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,14 +32,14 @@
     </style>
 </head>
 <body>
-    <h1>OpenAI Chat</h1>
+    <h1>DeepSeek Chat</h1>
     <div id="chat"></div>
     <input type="text" id="input" placeholder="Type your message here...">
     <button id="send">Send</button>
 
     <script>
-        // 在这里填写你的 OpenAI API 密钥
-        const apiKey = 'sk-npYNkHrXRN2xONGDHQXw1AGJuYaWM7kw85lb9z3YaY3t3Owi';
+        // 在这里填写你的 DeepSeek API 密钥
+        const apiKey = 'sk-2b0b1f4143894a8e9b32f67ae6b0e366';
 
         const chatElement = document.getElementById('chat');
         const inputElement = document.getElementById('input');
@@ -54,15 +54,15 @@
             inputElement.value = '';
 
             try {
-                // 调用 OpenAI API
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                // 调用 DeepSeek API
+                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${apiKey}`
                     },
                     body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',
+                        model: 'deepseek-chat', // 使用 DeepSeek 的模型
                         messages: [{ role: 'user', content: userMessage }],
                         max_tokens: 150
                     })
@@ -78,7 +78,7 @@
                 const aiMessage = data.choices[0].message.content;
 
                 // 显示 AI 的回复
-                chatElement.innerHTML += `<div><strong>AI:</strong> ${aiMessage}</div>`;
+                chatElement.innerHTML += `<div><strong>DeepSeek:</strong> ${aiMessage}</div>`;
             } catch (error) {
                 // 显示错误信息
                 console.error('Error:', error);
