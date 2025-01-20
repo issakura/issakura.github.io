@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sakura Chat</title>
     <style>
-        /* 重置样式 */
         * {
             margin: 0;
             padding: 0;
@@ -15,59 +14,90 @@
         body {
             font-family: Arial, sans-serif;
             color: #fff;
-            overflow: hidden;
+            min-height: 100vh;
             position: relative;
+            background: #000;
         }
 
-        /* 视频背景 */
-        #video-bg {
+        .video-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            overflow: hidden;
             z-index: -1;
         }
 
-        /* 聊天界面 */
+        #video-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
         h1 {
             text-align: center;
-            margin-top: 20px;
+            margin: 0 0 20px;
             color: #ff6f61;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         #chat {
             width: 100%;
-            max-width: 600px;
-            height: 300px;
+            max-width: 800px;
+            height: calc(100vh - 200px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            overflow-y: scroll;
-            margin: 20px auto;
-            background: transparent; /* 完全透明 */
+            padding: 20px;
+            overflow-y: auto;
+            margin: 0 auto 20px;
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
+        .input-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            padding: 0 10px;
+        }
+
         #input {
-            width: 80%;
-            padding: 10px;
+            flex-grow: 1;
+            padding: 12px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #000; /* 输入字体黑色 */
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
         }
 
         #send {
-            padding: 10px 20px;
+            padding: 12px 30px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
             background: #ff6f61;
             color: #fff;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
 
         #send:hover {
@@ -75,83 +105,133 @@
         }
 
         .message {
-            margin-bottom: 10px;
-            padding: 10px;
+            margin-bottom: 15px;
+            padding: 12px;
             border-radius: 10px;
-            max-width: 80%; /* 限制最大宽度 */
-            word-wrap: break-word; /* 自动换行 */
-            font-size: 14px; /* 调整字体大小 */
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 15px;
+            line-height: 1.4;
         }
 
         .user-message {
-            background: #4a90e2; /* 用户消息气泡蓝色 */
+            background: #4a90e2;
             color: #fff;
-            margin-left: auto; /* 靠右对齐 */
+            margin-left: auto;
         }
 
         .ai-message {
-            background: #fff; /* AI 消息气泡白色 */
+            background: rgba(255, 255, 255, 0.9);
             color: #000;
-            margin-right: auto; /* 靠左对齐 */
+            margin-right: auto;
         }
 
         .loading-message {
-            color: #fff;
+            color: rgba(255, 255, 255, 0.7);
             font-style: italic;
         }
 
         .error {
-            color: red;
+            color: #ff4a4a;
+            background: rgba(255, 74, 74, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* 滚动条样式 */
+        #chat::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #chat::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        #chat::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        #chat::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            #chat {
+                height: calc(100vh - 180px);
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            .input-container {
+                padding: 0 5px;
+            }
+
+            #send {
+                padding: 12px 20px;
+            }
         }
     </style>
-    <!-- 引入 marked.js 用于 Markdown 渲染 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    <!-- 视频背景 -->
-    <video autoplay muted loop id="video-bg">
-        <source src="https://cdn.10086.click/show/2025-01-20/decc993c-628a-4c15-a4f7-31d2cf5191e9.mp4" type="video/mp4">
-        您的浏览器不支持视频标签。
-    </video>
+    <div class="video-container">
+        <video autoplay muted loop id="video-bg" playsinline>
+            <source src="https://cdn.10086.click/show/2025-01-20/decc993c-628a-4c15-a4f7-31d2cf5191e9.mp4" type="video/mp4">
+            您的浏览器不支持视频标签。
+        </video>
+    </div>
 
-    <!-- 聊天界面 -->
-    <h1>Sakura Chat</h1>
-    <div id="chat"></div>
-    <div style="text-align: center;">
-        <input type="text" id="input" placeholder="Type your message here...">
-        <button id="send">Send</button>
+    <div class="content-wrapper">
+        <h1>Sakura Chat</h1>
+        <div id="chat"></div>
+        <div class="input-container">
+            <input type="text" id="input" placeholder="Type your message here...">
+            <button id="send">Send</button>
+        </div>
     </div>
 
     <script>
-        // 在这里填写你的 DeepSeek API 密钥
         const apiKey = 'sk-2b0b1f4143894a8e9b32f67ae6b0e366';
-
         const chatElement = document.getElementById('chat');
         const inputElement = document.getElementById('input');
         const sendButton = document.getElementById('send');
+
+        // 存储对话历史
+        let conversationHistory = [];
 
         // 添加消息到聊天框
         function addMessage(message, isUser) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
             messageElement.classList.add(isUser ? 'user-message' : 'ai-message');
+            
+            // 添加到对话历史
+            conversationHistory.push({
+                role: isUser ? 'user' : 'assistant',
+                content: message
+            });
+
             if (isUser) {
                 messageElement.innerHTML = `<strong>You:</strong> ${message}`;
             } else {
-                // 渲染 Markdown 内容
                 messageElement.innerHTML = `<strong>Sakura:</strong> ${marked.parse(message)}`;
             }
             chatElement.appendChild(messageElement);
-            chatElement.scrollTop = chatElement.scrollHeight; // 滚动到底部
+            chatElement.scrollTop = chatElement.scrollHeight;
         }
 
         // 显示加载提示
         function showLoading() {
             const loadingElement = document.createElement('div');
             loadingElement.classList.add('message', 'loading-message');
-            loadingElement.textContent = 'AI 加载中……';
+            loadingElement.textContent = 'Sakura is typing...';
             chatElement.appendChild(loadingElement);
-            chatElement.scrollTop = chatElement.scrollHeight; // 滚动到底部
+            chatElement.scrollTop = chatElement.scrollHeight;
             return loadingElement;
         }
 
@@ -160,18 +240,34 @@
             loadingElement.remove();
         }
 
+        // 处理错误
+        function handleError(error) {
+            console.error('Error:', error);
+            const errorElement = document.createElement('div');
+            errorElement.classList.add('message', 'error');
+            errorElement.innerHTML = `<strong>Error:</strong> ${error.message}`;
+            chatElement.appendChild(errorElement);
+            chatElement.scrollTop = chatElement.scrollHeight;
+        }
+
         async function sendMessage() {
-            const userMessage = inputElement.value;
+            const userMessage = inputElement.value.trim();
             if (!userMessage) return;
 
-            // 显示用户消息
-            addMessage(userMessage, true);
+            // 清空输入框并显示用户消息
             inputElement.value = '';
+            addMessage(userMessage, true);
 
             // 显示加载提示
             const loadingElement = showLoading();
 
             try {
+                // 准备发送给API的消息历史
+                const messages = conversationHistory.map(msg => ({
+                    role: msg.role,
+                    content: msg.content
+                }));
+
                 // 调用 DeepSeek API
                 const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                     method: 'POST',
@@ -180,38 +276,43 @@
                         'Authorization': `Bearer ${apiKey}`
                     },
                     body: JSON.stringify({
-                        model: 'deepseek-chat', // 使用 DeepSeek 的模型
-                        messages: [{ role: 'user', content: userMessage }],
-                        max_tokens: 150
+                        model: 'deepseek-chat',
+                        messages: messages,
+                        max_tokens: 1000,
+                        temperature: 0.7,
+                        top_p: 0.95
                     })
                 });
 
-                // 检查响应状态
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(`API 请求失败: ${response.status} - ${errorData.error?.message || '未知错误'}`);
+                    throw new Error(`API request failed: ${errorData.error?.message || 'Unknown error'}`);
                 }
 
                 const data = await response.json();
                 const aiMessage = data.choices[0].message.content;
 
-                // 移除加载提示并显示 AI 的回复
+                // 移除加载提示并显示AI回复
                 hideLoading(loadingElement);
                 addMessage(aiMessage, false);
             } catch (error) {
-                // 移除加载提示并显示错误信息
                 hideLoading(loadingElement);
-                console.error('Error:', error);
-                chatElement.innerHTML += `<div class="message error"><strong>Error:</strong> ${error.message}</div>`;
+                handleError(error);
             }
         }
 
         // 绑定事件
         sendButton.addEventListener('click', sendMessage);
-        inputElement.addEventListener('keypress', function (e) {
+        inputElement.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 sendMessage();
             }
+        });
+
+        // 初始化聊天界面
+        window.addEventListener('load', function() {
+            // 可以在这里添加欢迎消息
+            addMessage("你好！很高兴见到你。我是Sakura，你的AI助手。有什么我可以帮你的吗？", false);
         });
     </script>
 </body>
