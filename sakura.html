@@ -8,24 +8,35 @@
         /* 全局样式 */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            color: #333;
         }
 
         /* 聊天容器 */
         .chat-container {
-            width: 400px;
+            width: 450px;
             background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+        }
+
+        /* 标题栏 */
+        .chat-header {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
         }
 
         /* 聊天记录区域 */
@@ -41,28 +52,30 @@
         .user-message {
             background-color: #007bff;
             color: white;
-            padding: 10px;
-            border-radius: 10px 10px 0 10px;
+            padding: 10px 15px;
+            border-radius: 15px 15px 0 15px;
             margin-bottom: 10px;
             max-width: 80%;
             align-self: flex-end;
+            word-wrap: break-word;
         }
 
         /* AI 消息样式 */
         .ai-message {
             background-color: #e9ecef;
             color: #333;
-            padding: 10px;
-            border-radius: 10px 10px 10px 0;
+            padding: 10px 15px;
+            border-radius: 15px 15px 15px 0;
             margin-bottom: 10px;
             max-width: 80%;
             align-self: flex-start;
+            word-wrap: break-word;
         }
 
         /* 输入框和按钮容器 */
         .input-container {
             display: flex;
-            padding: 10px;
+            padding: 15px;
             background-color: #ffffff;
             border-top: 1px solid #e0e0e0;
         }
@@ -73,8 +86,13 @@
             padding: 10px;
             font-size: 16px;
             border: 1px solid #e0e0e0;
-            border-radius: 5px;
+            border-radius: 8px;
             outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        #input:focus {
+            border-color: #007bff;
         }
 
         /* 发送按钮 */
@@ -84,7 +102,7 @@
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             margin-left: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -94,16 +112,37 @@
             background-color: #0056b3;
         }
 
+        /* 使用提示 */
+        .chat-tip {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
         /* 错误信息样式 */
         .error {
             color: #dc3545;
             font-size: 14px;
             margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
+        <!-- 标题栏 -->
+        <div class="chat-header">
+            DeepSeek Chat
+        </div>
+
+        <!-- 使用提示 -->
+        <div class="chat-tip">
+            Type a message below to start chatting with DeepSeek!
+        </div>
+
         <!-- 聊天记录区域 -->
         <div id="chat"></div>
 
