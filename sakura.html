@@ -45,7 +45,7 @@
             padding: 10px;
             overflow-y: scroll;
             margin: 20px auto;
-            background: rgba(0, 0, 0, 0.7);
+            background: transparent; /* 完全透明 */
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
@@ -57,7 +57,7 @@
             border: none;
             border-radius: 5px;
             background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: #000; /* 输入字体黑色 */
         }
 
         #send {
@@ -77,8 +77,21 @@
         .message {
             margin-bottom: 10px;
             padding: 10px;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: #4a90e2; /* 用户消息气泡蓝色 */
+            color: #fff;
+            margin-left: auto; /* 靠右对齐 */
+        }
+
+        .ai-message {
+            background: #fff; /* AI 消息气泡白色 */
+            color: #000;
+            margin-right: auto; /* 靠左对齐 */
         }
 
         .error {
@@ -114,7 +127,7 @@
             if (!userMessage) return;
 
             // 显示用户消息
-            chatElement.innerHTML += `<div class="message"><strong>You:</strong> ${userMessage}</div>`;
+            chatElement.innerHTML += `<div class="message user-message"><strong>You:</strong> ${userMessage}</div>`;
             inputElement.value = '';
 
             try {
@@ -142,7 +155,7 @@
                 const aiMessage = data.choices[0].message.content;
 
                 // 显示 AI 的回复
-                chatElement.innerHTML += `<div class="message"><strong>Sakura:</strong> ${aiMessage}</div>`;
+                chatElement.innerHTML += `<div class="message ai-message"><strong>Sakura:</strong> ${aiMessage}</div>`;
             } catch (error) {
                 // 显示错误信息
                 console.error('Error:', error);
