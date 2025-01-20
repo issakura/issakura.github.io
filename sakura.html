@@ -170,21 +170,48 @@
             chatBox.scrollTop = chatBox.scrollHeight; // 滚动到底部
         }
 
+        // 调用 AI 接口
+        async function getAIResponse(message) {
+            const apiKey = 'sk-2b0b1f4143894a8e9b32f67ae6b0e366'; // 替换为你的 API Key
+            const apiUrl = 'https://api.openai.com/v1/chat/completions';
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{ role: 'user', content: message }],
+                        max_tokens: 150
+                    })
+                });
+
+                const data = await response.json();
+                return data.choices[0].message.content.trim();
+            } catch (error) {
+                console.error('调用 AI 接口失败:', error);
+                return '抱歉，AI 暂时无法回复。';
+            }
+        }
+
         // 发送消息
-        sendBtn.addEventListener('click', () => {
+        sendBtn.addEventListener('click', async () => {
             const message = userInput.value.trim();
             if (message) {
                 addMessage(message, true);
                 userInput.value = '';
-                // 模拟 AI 回复
-                setTimeout(() => {
-                    addMessage('这是 AI 的回复。', false);
-                }, 1000);
+
+                // 调用 AI 接口并显示回复
+                const aiResponse = await getAIResponse(message);
+                addMessage(aiResponse, false);
             }
         });
 
         // 回车键发送消息
-        userInput.addEventListener('keypress', (e) => {
+        userInput.addEventListener('keypress', async (e) => {
             if (e.key === 'Enter') {
                 sendBtn.click();
             }
