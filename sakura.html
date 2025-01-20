@@ -40,7 +40,6 @@
             width: auto;
             height: auto;
             object-fit: cover;
-            transform: translate(-50%, -50%) scale(1.2);
         }
 
         .chat-container {
@@ -170,7 +169,7 @@
                         'Authorization': `Bearer ${apiKey}`
                     },
                     body: JSON.stringify({
-                        model: 'gpt-3.5-turbo', // 根据 DeepSeek 支持的模型调整
+                        model: 'gpt-3.5-turbo',
                         messages: [{ role: 'user', content: userMessage }]
                     })
                 });
