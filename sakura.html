@@ -94,10 +94,17 @@
             margin-right: auto; /* 靠左对齐 */
         }
 
+        .loading-message {
+            color: #fff;
+            font-style: italic;
+        }
+
         .error {
             color: red;
         }
     </style>
+    <!-- 引入 marked.js 用于 Markdown 渲染 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <!-- 视频背景 -->
@@ -122,13 +129,46 @@
         const inputElement = document.getElementById('input');
         const sendButton = document.getElementById('send');
 
+        // 添加消息到聊天框
+        function addMessage(message, isUser) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.classList.add(isUser ? 'user-message' : 'ai-message');
+            if (isUser) {
+                messageElement.innerHTML = `<strong>You:</strong> ${message}`;
+            } else {
+                // 渲染 Markdown 内容
+                messageElement.innerHTML = `<strong>Sakura:</strong> ${marked.parse(message)}`;
+            }
+            chatElement.appendChild(messageElement);
+            chatElement.scrollTop = chatElement.scrollHeight; // 滚动到底部
+        }
+
+        // 显示加载提示
+        function showLoading() {
+            const loadingElement = document.createElement('div');
+            loadingElement.classList.add('message', 'loading-message');
+            loadingElement.textContent = 'AI 加载中……';
+            chatElement.appendChild(loadingElement);
+            chatElement.scrollTop = chatElement.scrollHeight; // 滚动到底部
+            return loadingElement;
+        }
+
+        // 移除加载提示
+        function hideLoading(loadingElement) {
+            loadingElement.remove();
+        }
+
         async function sendMessage() {
             const userMessage = inputElement.value;
             if (!userMessage) return;
 
             // 显示用户消息
-            chatElement.innerHTML += `<div class="message user-message"><strong>You:</strong> ${userMessage}</div>`;
+            addMessage(userMessage, true);
             inputElement.value = '';
+
+            // 显示加载提示
+            const loadingElement = showLoading();
 
             try {
                 // 调用 DeepSeek API
@@ -154,16 +194,15 @@
                 const data = await response.json();
                 const aiMessage = data.choices[0].message.content;
 
-                // 显示 AI 的回复
-                chatElement.innerHTML += `<div class="message ai-message"><strong>Sakura:</strong> ${aiMessage}</div>`;
+                // 移除加载提示并显示 AI 的回复
+                hideLoading(loadingElement);
+                addMessage(aiMessage, false);
             } catch (error) {
-                // 显示错误信息
+                // 移除加载提示并显示错误信息
+                hideLoading(loadingElement);
                 console.error('Error:', error);
                 chatElement.innerHTML += `<div class="message error"><strong>Error:</strong> ${error.message}</div>`;
             }
-
-            // 滚动到底部
-            chatElement.scrollTop = chatElement.scrollHeight;
         }
 
         // 绑定事件
