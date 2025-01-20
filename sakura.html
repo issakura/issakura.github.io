@@ -7,9 +7,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <style>
         /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
             margin: 0;
             padding: 0;
             display: flex;
@@ -17,11 +22,48 @@
             align-items: center;
             min-height: 100vh;
             color: #333;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Chat container with animation setup */
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* Overlay for better readability */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        /* Chat container with responsive design */
         .chat-container {
-            width: 450px;
+            width: 90%;
+            max-width: 450px;
             background-color: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
@@ -31,17 +73,8 @@
             opacity: 0;
             transform: translateY(20px);
             position: relative;
-        }
-
-        /* Sakura petals */
-        .sakura {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background: pink;
-            border-radius: 15px 0;
-            opacity: 0.6;
-            pointer-events: none;
+            margin: 20px auto;
+            backdrop-filter: blur(10px);
         }
 
         /* Header with gradient animation */
@@ -51,7 +84,7 @@
             color: white;
             padding: 20px;
             text-align: center;
-            font-size: 24px;
+            font-size: clamp(18px, 4vw, 24px);
             font-weight: bold;
             position: relative;
             overflow: hidden;
@@ -59,9 +92,9 @@
 
         .chat-tip {
             padding: 12px 20px;
-            background-color: #f8f9fa;
+            background-color: rgba(248, 249, 250, 0.9);
             color: #666;
-            font-size: 14px;
+            font-size: clamp(12px, 3vw, 14px);
             text-align: center;
             border-bottom: 1px solid #e0e0e0;
             opacity: 0;
@@ -71,19 +104,21 @@
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background-color: #fafafa;
+            background-color: rgba(250, 250, 250, 0.9);
             border-bottom: 1px solid #e0e0e0;
-            max-height: 400px;
+            max-height: 60vh;
+            min-height: 300px;
         }
 
-        /* Message styles with animations */
+        /* Responsive message styles */
         .user-message, .ai-message {
             padding: 12px 18px;
             margin-bottom: 12px;
-            max-width: 80%;
+            max-width: 85%;
             word-wrap: break-word;
             opacity: 0;
             transform: translateX(20px);
+            font-size: clamp(14px, 3vw, 16px);
         }
 
         .user-message {
@@ -94,7 +129,7 @@
         }
 
         .ai-message {
-            background-color: #e9ecef;
+            background-color: rgba(233, 236, 239, 0.9);
             color: #333;
             border-radius: 15px 15px 15px 0;
             margin-right: auto;
@@ -104,19 +139,21 @@
         .input-container {
             display: flex;
             padding: 15px;
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.95);
             border-top: 1px solid #e0e0e0;
             opacity: 0;
+            gap: 10px;
         }
 
         #input {
             flex: 1;
             padding: 12px;
-            font-size: 16px;
+            font-size: clamp(14px, 3vw, 16px);
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             outline: none;
             transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.9);
         }
 
         #input:focus {
@@ -125,17 +162,17 @@
         }
 
         #send {
-            padding: 12px 24px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: clamp(14px, 3vw, 16px);
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 8px;
-            margin-left: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            min-width: 70px;
         }
 
         #send:hover {
@@ -146,10 +183,13 @@
 
         .error {
             color: #dc3545;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: clamp(12px, 3vw, 14px);
+            margin: 10px;
             text-align: center;
             opacity: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
         }
 
         /* Loading animation */
@@ -168,9 +208,84 @@
             margin: 0 3px;
             opacity: 0;
         }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            .chat-container {
+                width: 95%;
+                margin: 10px auto;
+                height: 90vh;
+            }
+
+            #chat {
+                max-height: 65vh;
+            }
+
+            .input-container {
+                padding: 10px;
+            }
+
+            #input {
+                padding: 10px;
+            }
+
+            #send {
+                padding: 10px;
+            }
+
+            .user-message, .ai-message {
+                max-width: 90%;
+            }
+        }
+
+        /* Small screen adjustments */
+        @media (max-width: 480px) {
+            .chat-container {
+                width: 98%;
+                margin: 5px auto;
+                border-radius: 10px;
+            }
+
+            .chat-header {
+                padding: 15px;
+            }
+
+            #chat {
+                padding: 15px;
+            }
+
+            .user-message, .ai-message {
+                padding: 10px 15px;
+                margin-bottom: 8px;
+            }
+        }
+
+        /* Landscape mode adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .chat-container {
+                height: 95vh;
+            }
+
+            #chat {
+                max-height: 50vh;
+                min-height: 200px;
+            }
+
+            .chat-header {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay loop muted playsinline>
+            <source src="https://cdn.10086.click/show/2025-01-20/decc993c-628a-4c15-a4f7-31d2cf5191e9.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="overlay"></div>
+
     <div class="chat-container">
         <div class="chat-header">
             Sakura Chat
@@ -196,6 +311,12 @@
         const inputElement = document.getElementById('input');
         const sendButton = document.getElementById('send');
         const loadingElement = document.querySelector('.loading');
+        const video = document.querySelector('video');
+
+        // Ensure video plays on mobile devices
+        document.body.addEventListener('touchstart', () => {
+            video.play();
+        });
 
         // Initial animations
         anime({
@@ -290,35 +411,6 @@
             }
         }
 
-        // Create sakura petals
-        function createSakura() {
-            const sakura = document.createElement('div');
-            sakura.className = 'sakura';
-            document.body.appendChild(sakura);
-
-            const startX = Math.random() * window.innerWidth;
-            const duration = 4000 + Math.random() * 3000;
-
-            anime({
-                targets: sakura,
-                left: [startX, startX + 200 + Math.random() * 300],
-                top: [-20, window.innerHeight + 20],
-                rotate: [0, 720],
-                opacity: {
-                    value: [0.6, 0],
-                    duration: duration * 0.8
-                },
-                duration: duration,
-                easing: 'easeOutQuad',
-                complete: () => {
-                    sakura.remove();
-                }
-            });
-        }
-
-        // Spawn sakura petals periodically
-        setInterval(createSakura, 2000);
-
         async function sendMessage() {
             const userMessage = inputElement.value;
             if (!userMessage) return;
@@ -391,8 +483,4 @@
             }
         });
 
-        // Load chat history on page load
-        loadChatHistory();
-    </script>
-</body>
-</html>
+        // Load chat history on page load</antArtifact>
