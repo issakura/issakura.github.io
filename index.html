@@ -250,12 +250,6 @@
             const gallery = document.getElementById('gallery');
             const loadedImages = new Set(); // 缓存已加载图片的地址
 
-            // 模拟图片数据
-            const images = Array.from({ length: 50 }, (_, i) => ({
-                src: `https://picsum.photos/300/400?random=${i + 1}`,
-                alt: `Random Image ${i + 1}`,
-            }));
-
             // 渲染瀑布流图片
             function renderGallery(images) {
                 images.forEach((image, index) => {
