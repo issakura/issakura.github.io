@@ -3,377 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosplay Gallery</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sakura Cosplay Gallery</title>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
+        /* 全局样式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
 
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            padding: 20px;
-        }
+/* 弹窗样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
 
-        .gallery-item {
-            width: calc(25% - 10px);
-            margin-bottom: 10px;
-            position: relative;
-            overflow: hidden;
-            background: #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-        .gallery-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            border-radius: 8px;
-        }
+.close:hover {
+    color: #000;
+}
 
-        .gallery-item img.loaded {
-            opacity: 1;
-        }
+/* 瀑布流布局 */
+.gallery {
+    column-count: 4;
+    column-gap: 10px;
+    padding: 10px;
+}
 
-        /* 模态框样式 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
+.gallery-item {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
 
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 8px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
+.gallery-item:hover {
+    transform: scale(1.05);
+}
 
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #fff;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
 
-        .close:hover {
-            color: #ff4d4d;
-        }
+/* 分页样式 */
+.pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.pagination button {
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #ff3b2f;
+}
+
+#page-info {
+    font-size: 18px;
+    margin: 0 10px;
+}
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
-
 <body>
-    <div class="gallery" id="gallery">
-       <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (1).jpg" alt="Coser展馆 (1)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (2).jpg" alt="Coser展馆 (2)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (3).jpg" alt="Coser展馆 (3)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (4).jpg" alt="Coser展馆 (4)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (5).jpg" alt="Coser展馆 (5)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (6).jpg" alt="Coser展馆 (6)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (7).jpg" alt="Coser展馆 (7)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (8).jpg" alt="Coser展馆 (8)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (9).jpg" alt="Coser展馆 (9)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (10).jpg" alt="Coser展馆 (10)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (11).jpg" alt="Coser展馆 (11)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (12).jpg" alt="Coser展馆 (12)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (13).jpg" alt="Coser展馆 (13)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (14).jpg" alt="Coser展馆 (14)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (15).jpg" alt="Coser展馆 (15)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (16).jpg" alt="Coser展馆 (16)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (17).jpg" alt="Coser展馆 (17)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (18).jpg" alt="Coser展馆 (18)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (19).jpg" alt="Coser展馆 (19)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (20).jpg" alt="Coser展馆 (20)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (21).jpg" alt="Coser展馆 (21)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (22).jpg" alt="Coser展馆 (22)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (23).jpg" alt="Coser展馆 (23)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (24).jpg" alt="Coser展馆 (24)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (25).jpg" alt="Coser展馆 (25)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (26).jpg" alt="Coser展馆 (26)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (27).jpg" alt="Coser展馆 (27)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (28).jpg" alt="Coser展馆 (28)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (29).jpg" alt="Coser展馆 (29)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (30).jpg" alt="Coser展馆 (30)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (31).jpg" alt="Coser展馆 (31)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (32).jpg" alt="Coser展馆 (32)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (33).jpg" alt="Coser展馆 (33)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (34).jpg" alt="Coser展馆 (34)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (35).jpg" alt="Coser展馆 (35)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (36).jpg" alt="Coser展馆 (36)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (37).jpg" alt="Coser展馆 (37)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (38).jpg" alt="Coser展馆 (38)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (39).jpg" alt="Coser展馆 (39)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (40).jpg" alt="Coser展馆 (40)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (41).jpg" alt="Coser展馆 (41)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (42).jpg" alt="Coser展馆 (42)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (43).jpg" alt="Coser展馆 (43)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (44).jpg" alt="Coser展馆 (44)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (45).jpg" alt="Coser展馆 (45)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (46).jpg" alt="Coser展馆 (46)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (47).jpg" alt="Coser展馆 (47)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (48).jpg" alt="Coser展馆 (48)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (49).jpg" alt="Coser展馆 (49)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (50).jpg" alt="Coser展馆 (50)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (51).jpg" alt="Coser展馆 (51)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (52).jpg" alt="Coser展馆 (52)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (53).jpg" alt="Coser展馆 (53)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (54).jpg" alt="Coser展馆 (54)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (55).jpg" alt="Coser展馆 (55)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (56).jpg" alt="Coser展馆 (56)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (57).jpg" alt="Coser展馆 (57)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (58).jpg" alt="Coser展馆 (58)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (59).jpg" alt="Coser展馆 (59)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (60).jpg" alt="Coser展馆 (60)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (61).jpg" alt="Coser展馆 (61)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (62).jpg" alt="Coser展馆 (62)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (63).jpg" alt="Coser展馆 (63)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (64).jpg" alt="Coser展馆 (64)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (65).jpg" alt="Coser展馆 (65)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (66).jpg" alt="Coser展馆 (66)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (67).jpg" alt="Coser展馆 (67)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (68).jpg" alt="Coser展馆 (68)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (69).jpg" alt="Coser展馆 (69)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (70).jpg" alt="Coser展馆 (70)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (71).jpg" alt="Coser展馆 (71)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (72).jpg" alt="Coser展馆 (72)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (73).jpg" alt="Coser展馆 (73)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (74).jpg" alt="Coser展馆 (74)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (75).jpg" alt="Coser展馆 (75)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (76).jpg" alt="Coser展馆 (76)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (77).jpg" alt="Coser展馆 (77)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (78).jpg" alt="Coser展馆 (78)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (79).jpg" alt="Coser展馆 (79)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (80).jpg" alt="Coser展馆 (80)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (81).jpg" alt="Coser展馆 (81)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (82).jpg" alt="Coser展馆 (82)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (83).jpg" alt="Coser展馆 (83)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (84).jpg" alt="Coser展馆 (84)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (85).jpg" alt="Coser展馆 (85)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (86).jpg" alt="Coser展馆 (86)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (87).jpg" alt="Coser展馆 (87)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (88).jpg" alt="Coser展馆 (88)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (89).jpg" alt="Coser展馆 (89)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (90).jpg" alt="Coser展馆 (90)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (91).jpg" alt="Coser展馆 (91)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (92).jpg" alt="Coser展馆 (92)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (93).jpg" alt="Coser展馆 (93)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (94).jpg" alt="Coser展馆 (94)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (95).jpg" alt="Coser展馆 (95)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (96).jpg" alt="Coser展馆 (96)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (97).jpg" alt="Coser展馆 (97)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (98).jpg" alt="Coser展馆 (98)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (99).jpg" alt="Coser展馆 (99)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (100).jpg" alt="Coser展馆 (100)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (101).jpg" alt="Coser展馆 (101)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (102).jpg" alt="Coser展馆 (102)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (103).jpg" alt="Coser展馆 (103)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (104).jpg" alt="Coser展馆 (104)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (105).jpg" alt="Coser展馆 (105)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (106).jpg" alt="Coser展馆 (106)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (107).jpg" alt="Coser展馆 (107)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (108).jpg" alt="Coser展馆 (108)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (109).jpg" alt="Coser展馆 (109)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (110).jpg" alt="Coser展馆 (110)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (111).jpg" alt="Coser展馆 (111)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (112).jpg" alt="Coser展馆 (112)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (113).jpg" alt="Coser展馆 (113)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (114).jpg" alt="Coser展馆 (114)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (115).jpg" alt="Coser展馆 (115)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (116).jpg" alt="Coser展馆 (116)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (117).jpg" alt="Coser展馆 (117)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (118).jpg" alt="Coser展馆 (118)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (119).jpg" alt="Coser展馆 (119)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (120).jpg" alt="Coser展馆 (120)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (121).jpg" alt="Coser展馆 (121)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (122).jpg" alt="Coser展馆 (122)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (123).jpg" alt="Coser展馆 (123)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (124).jpg" alt="Coser展馆 (124)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (125).jpg" alt="Coser展馆 (125)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (126).jpg" alt="Coser展馆 (126)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (127).jpg" alt="Coser展馆 (127)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (128).jpg" alt="Coser展馆 (128)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (129).jpg" alt="Coser展馆 (129)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (130).jpg" alt="Coser展馆 (130)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (131).jpg" alt="Coser展馆 (131)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (132).jpg" alt="Coser展馆 (132)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (133).jpg" alt="Coser展馆 (133)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (134).jpg" alt="Coser展馆 (134)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (135).jpg" alt="Coser展馆 (135)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (136).jpg" alt="Coser展馆 (136)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (137).jpg" alt="Coser展馆 (137)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (138).jpg" alt="Coser展馆 (138)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (139).jpg" alt="Coser展馆 (139)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (140).jpg" alt="Coser展馆 (140)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (141).jpg" alt="Coser展馆 (141)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (142).jpg" alt="Coser展馆 (142)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (143).jpg" alt="Coser展馆 (143)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (144).jpg" alt="Coser展馆 (144)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (145).jpg" alt="Coser展馆 (145)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (146).jpg" alt="Coser展馆 (146)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (147).jpg" alt="Coser展馆 (147)">
-        <img class="gallery-item lazy" data-src="https://sakurah.b-cdn.net/maid-game/Coser展馆 (148).jpg" alt="Coser展馆 (148)">
+    <!-- 弹窗提示 -->
+    <div id="welcome-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>欢迎来到 Sakura 的 Cosplay 展馆！</p>
+            <p>这里收集了精美的 Cosplay 图片，请尽情欣赏~</p>
+        </div>
     </div>
-    <div id="image-modal" class="modal">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="modal-image">
+
+    <!-- 图片展示区域 -->
+    <div class="gallery" id="gallery"></div>
+
+    <!-- 分页按钮 -->
+    <div class="pagination" id="pagination">
+        <button id="prev-page">上一页</button>
+        <span id="page-info"></span>
+        <button id="next-page">下一页</button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const gallery = document.getElementById('gallery');
-            const loadedImages = new Set(); // 缓存已加载图片的地址
+        // 图片数据
+        const imageUrls = [
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (1).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (2).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (3).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (4).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (5).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (6).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (7).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (8).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (9).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (10).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (11).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (12).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (13).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (14).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (15).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (16).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (17).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (18).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (19).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (20).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (21).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (22).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (23).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (24).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (25).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (26).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (27).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (28).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (29).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (30).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (31).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (32).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (33).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (34).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (35).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (36).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (37).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (38).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (39).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (40).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (41).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (42).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (43).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (44).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (45).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (46).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (47).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (48).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (49).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (50).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (51).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (52).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (53).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (54).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (55).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (56).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (57).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (58).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (59).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (60).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (61).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (62).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (63).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (64).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (65).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (66).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (67).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (68).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (69).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (70).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (71).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (72).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (73).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (74).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (75).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (76).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (77).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (78).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (79).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (80).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (81).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (82).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (83).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (84).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (85).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (86).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (87).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (88).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (89).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (90).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (91).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (92).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (93).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (94).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (95).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (96).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (97).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (98).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (99).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (100).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (101).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (102).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (103).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (104).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (105).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (106).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (107).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (108).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (109).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (110).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (111).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (112).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (113).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (114).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (115).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (116).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (117).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (118).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (119).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (120).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (121).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (122).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (123).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (124).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (125).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (126).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (127).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (128).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (129).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (130).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (131).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (132).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (133).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (134).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (135).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (136).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (137).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (138).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (139).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (140).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (141).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (142).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (143).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (144).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (145).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (146).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (147).jpg",
+    "https://sakurah.b-cdn.net/maid-game/Coser展馆 (148).jpg"
+];
 
-            // 渲染瀑布流图片
-            function renderGallery(images) {
-                images.forEach((image, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'gallery-item';
-                    const img = document.createElement('img');
-                    img.className = 'lazy';
-                    img.dataset.src = image.src;
-                    img.alt = image.alt;
-                    div.appendChild(img);
-                    gallery.appendChild(div);
-                });
+// 分页配置
+const imagesPerPage = 20;
+let currentPage = 1;
+
+// 弹窗逻辑
+const modal = document.getElementById("welcome-modal");
+const closeBtn = document.querySelector(".close");
+
+window.onload = () => {
+    modal.style.display = "block";
+};
+
+closeBtn.onclick = () => {
+    modal.style.display = "none";
+};
+
+window.onclick = (event) => {
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+};
+
+// 分页逻辑
+function renderGallery(page) {
+    const gallery = document.getElementById("gallery");
+    gallery.innerHTML = ""; // 清空当前内容
+
+    const start = (page - 1) * imagesPerPage;
+    const end = start + imagesPerPage;
+    const imagesToShow = imageUrls.slice(start, end);
+
+    imagesToShow.forEach((url) => {
+        const imgContainer = document.createElement("div");
+        imgContainer.className = "gallery-item";
+
+        const img = document.createElement("img");
+        img.dataset.src = url; // 使用 data-src 实现懒加载
+        img.alt = "Coser展馆图片";
+
+        imgContainer.appendChild(img);
+        gallery.appendChild(imgContainer);
+    });
+
+    // 更新分页信息
+    document.getElementById("page-info").textContent = `第 ${page} 页 / 共 ${Math.ceil(imageUrls.length / imagesPerPage)} 页`;
+
+    // 懒加载图片
+    lazyLoadImages();
+}
+
+// 懒加载逻辑
+function lazyLoadImages() {
+    const images = document.querySelectorAll(".gallery-item img");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                observer.unobserve(img);
             }
-
-            // 懒加载功能
-            function lazyLoad() {
-                const lazyImages = document.querySelectorAll('.lazy');
-
-                if ('IntersectionObserver' in window) {
-                    const observer = new IntersectionObserver((entries, observer) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                const img = entry.target;
-
-                                // 检查缓存，避免重复加载
-                                if (!loadedImages.has(img.dataset.src)) {
-                                    img.src = img.dataset.src; // 设置图片地址
-                                    img.onload = () => {
-                                        anime({
-                                            targets: img,
-                                            opacity: [0, 1],
-                                            duration: 500,
-                                            easing: 'easeInOutQuad'
-                                        });
-                                        loadedImages.add(img.dataset.src); // 缓存图片地址
-                                    };
-                                }
-
-                                observer.unobserve(img); // 停止观察当前图片
-                            }
-                        });
-                    }, { rootMargin: '200px' }); // 提前 200px 加载
-
-                    lazyImages.forEach(image => observer.observe(image));
-                } else {
-                    // 兼容性处理：使用滚动事件
-                    const fallbackLazyLoad = () => {
-                        lazyImages.forEach(img => {
-                            if (img.getBoundingClientRect().top < window.innerHeight) {
-                                if (!loadedImages.has(img.dataset.src)) {
-                                    img.src = img.dataset.src;
-                                    img.onload = () => {
-                                        anime({
-                                            targets: img,
-                                            opacity: [0, 1],
-                                            duration: 500,
-                                            easing: 'easeInOutQuad'
-                                        });
-                                        loadedImages.add(img.dataset.src);
-                                    };
-                                }
-                            }
-                        });
-                    };
-
-                    window.addEventListener('scroll', fallbackLazyLoad);
-                    fallbackLazyLoad();
-                }
-            }
-
-            // 模态框逻辑
-            function initModal() {
-                const modal = document.getElementById('image-modal');
-                const modalImage = document.getElementById('modal-image');
-                const closeModal = document.querySelector('.close');
-
-                gallery.addEventListener('click', (event) => {
-                    if (event.target.tagName === 'IMG') {
-                        modal.style.display = 'flex';
-                        modalImage.src = event.target.src;
-                        anime({
-                            targets: modalImage,
-                            opacity: [0, 1],
-                            scale: [0.9, 1],
-                            duration: 300,
-                            easing: 'easeInOutQuad'
-                        });
-                    }
-                });
-
-                closeModal.addEventListener('click', () => {
-                    anime({
-                        targets: modalImage,
-                        opacity: [1, 0],
-                        scale: [1, 0.9],
-                        duration: 300,
-                        easing: 'easeInOutQuad',
-                        complete: () => {
-                            modal.style.display = 'none';
-                        }
-                    });
-                });
-
-                modal.addEventListener('click', (event) => {
-                    if (event.target === modal) {
-                        anime({
-                            targets: modalImage,
-                            opacity: [1, 0],
-                            scale: [1, 0.9],
-                            duration: 300,
-                            easing: 'easeInOutQuad',
-                            complete: () => {
-                                modal.style.display = 'none';
-                            }
-                        });
-                    }
-                });
-            }
-
-            // 初始化功能
-            renderGallery(images); // 渲染图片
-            lazyLoad(); // 启用懒加载
-            initModal(); // 初始化模态框
         });
+    });
+
+    images.forEach((img) => {
+        observer.observe(img);
+    });
+}
+
+// 分页按钮事件
+document.getElementById("prev-page").addEventListener("click", () => {
+    if (currentPage > 1) {
+        currentPage--;
+        renderGallery(currentPage);
+    }
+});
+
+document.getElementById("next-page").addEventListener("click", () => {
+    if (currentPage < Math.ceil(imageUrls.length / imagesPerPage)) {
+        currentPage++;
+        renderGallery(currentPage);
+    }
+});
+
+// 初始化
+renderGallery(currentPage);
     </script>
 </body>
 </html>
