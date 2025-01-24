@@ -6,99 +6,99 @@
     <title>Sakura Cosplay Gallery</title>
     <style>
         /* 全局样式 */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
 
-/* 弹窗样式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-}
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
 
-.modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-.close:hover {
-    color: #000;
-}
+        .close:hover {
+            color: #000;
+        }
 
-/* 瀑布流布局 */
-.gallery {
-    column-count: 4;
-    column-gap: 10px;
-    padding: 10px;
-}
+        /* 瀑布流布局 */
+        .gallery {
+            column-count: 4;
+            column-gap: 10px;
+            padding: 10px;
+        }
 
-.gallery-item {
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
+        .gallery-item {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
 
-.gallery-item:hover {
-    transform: scale(1.05);
-}
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
 
-.gallery-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
 
-/* 分页样式 */
-.pagination {
-    text-align: center;
-    margin: 20px 0;
-}
+        /* 分页样式 */
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
 
-.pagination button {
-    background-color: #ff6f61;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 0 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        .pagination button {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-.pagination button:hover {
-    background-color: #ff3b2f;
-}
+        .pagination button:hover {
+            background-color: #ff3b2f;
+        }
 
-#page-info {
-    font-size: 18px;
-    margin: 0 10px;
-}
+        #page-info {
+            font-size: 18px;
+            margin: 0 10px;
+        }
     </style>
 </head>
 <body>
@@ -274,92 +274,135 @@ body {
     "https://sakurah.b-cdn.net/maid-game/Coser展馆 (148).jpg"
 ];
 
-// 分页配置
-const imagesPerPage = 20;
-let currentPage = 1;
+        // 缓存配置
+        const CACHE_KEY = "sakura_gallery_cache";
+        const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 缓存过期时间：24小时
 
-// 弹窗逻辑
-const modal = document.getElementById("welcome-modal");
-const closeBtn = document.querySelector(".close");
+        // 分页配置
+        const imagesPerPage = 20;
+        let currentPage = 1;
 
-window.onload = () => {
-    modal.style.display = "block";
-};
+        // 弹窗逻辑
+        const modal = document.getElementById("welcome-modal");
+        const closeBtn = document.querySelector(".close");
 
-closeBtn.onclick = () => {
-    modal.style.display = "none";
-};
+        window.onload = () => {
+            modal.style.display = "block";
+            loadGalleryData(); // 加载图片数据
+        };
 
-window.onclick = (event) => {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-};
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+        };
 
-// 分页逻辑
-function renderGallery(page) {
-    const gallery = document.getElementById("gallery");
-    gallery.innerHTML = ""; // 清空当前内容
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
 
-    const start = (page - 1) * imagesPerPage;
-    const end = start + imagesPerPage;
-    const imagesToShow = imageUrls.slice(start, end);
+        // 加载图片数据
+        function loadGalleryData() {
+            const cachedData = getCachedData();
+            if (cachedData) {
+                renderGallery(currentPage);
+            } else {
+                fetchImageData().then(() => {
+                    renderGallery(currentPage);
+                });
+            }
+        }
 
-    imagesToShow.forEach((url) => {
-        const imgContainer = document.createElement("div");
-        imgContainer.className = "gallery-item";
+        // 获取缓存数据
+        function getCachedData() {
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            if (!cachedData) return null;
 
-        const img = document.createElement("img");
-        img.dataset.src = url; // 使用 data-src 实现懒加载
-        img.alt = "Coser展馆图片";
+            const { timestamp, data } = JSON.parse(cachedData);
+            if (Date.now() - timestamp > CACHE_EXPIRY) {
+                localStorage.removeItem(CACHE_KEY); // 清除过期缓存
+                return null;
+            }
 
-        imgContainer.appendChild(img);
-        gallery.appendChild(imgContainer);
-    });
+            return data;
+        }
 
-    // 更新分页信息
-    document.getElementById("page-info").textContent = `第 ${page} 页 / 共 ${Math.ceil(imageUrls.length / imagesPerPage)} 页`;
+        // 获取图片数据并缓存
+        function fetchImageData() {
+            return new Promise((resolve) => {
+                // 模拟从服务器获取数据
+                setTimeout(() => {
+                    const cacheData = {
+                        timestamp: Date.now(),
+                        data: imageUrls,
+                    };
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+                    resolve();
+                }, 500); // 模拟网络延迟
+            });
+        }
 
-    // 懒加载图片
-    lazyLoadImages();
-}
+        // 渲染画廊
+        function renderGallery(page) {
+            const gallery = document.getElementById("gallery");
+            gallery.innerHTML = ""; // 清空当前内容
 
-// 懒加载逻辑
-function lazyLoadImages() {
-    const images = document.querySelectorAll(".gallery-item img");
+            const start = (page - 1) * imagesPerPage;
+            const end = start + imagesPerPage;
+            const imagesToShow = imageUrls.slice(start, end);
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                observer.unobserve(img);
+            imagesToShow.forEach((url) => {
+                const imgContainer = document.createElement("div");
+                imgContainer.className = "gallery-item";
+
+                const img = document.createElement("img");
+                img.dataset.src = url; // 使用 data-src 实现懒加载
+                img.alt = "Coser展馆图片";
+
+                imgContainer.appendChild(img);
+                gallery.appendChild(imgContainer);
+            });
+
+            // 更新分页信息
+            document.getElementById("page-info").textContent = `第 ${page} 页 / 共 ${Math.ceil(imageUrls.length / imagesPerPage)} 页`;
+
+            // 懒加载图片
+            lazyLoadImages();
+        }
+
+        // 懒加载逻辑
+        function lazyLoadImages() {
+            const images = document.querySelectorAll(".gallery-item img");
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            images.forEach((img) => {
+                observer.observe(img);
+            });
+        }
+
+        // 分页按钮事件
+        document.getElementById("prev-page").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderGallery(currentPage);
             }
         });
-    });
 
-    images.forEach((img) => {
-        observer.observe(img);
-    });
-}
-
-// 分页按钮事件
-document.getElementById("prev-page").addEventListener("click", () => {
-    if (currentPage > 1) {
-        currentPage--;
-        renderGallery(currentPage);
-    }
-});
-
-document.getElementById("next-page").addEventListener("click", () => {
-    if (currentPage < Math.ceil(imageUrls.length / imagesPerPage)) {
-        currentPage++;
-        renderGallery(currentPage);
-    }
-});
-
-// 初始化
-renderGallery(currentPage);
+        document.getElementById("next-page").addEventListener("click", () => {
+            if (currentPage < Math.ceil(imageUrls.length / imagesPerPage)) {
+                currentPage++;
+                renderGallery(currentPage);
+            }
+        });
     </script>
 </body>
 </html>
