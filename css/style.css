@@ -1,0 +1,332 @@
+/* 全局样式 */
+:root {
+    --primary-color: #4e73df;
+    --secondary-color: #858796;
+    --success-color: #1cc88a;
+    --info-color: #36b9cc;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+    --light-color: #f8f9fc;
+    --dark-color: #5a5c69;
+    --body-bg: #f8f9fc;
+    --card-border-radius: 0.35rem;
+    --transition-speed: 0.3s;
+}
+
+body {
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--body-bg);
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 导航栏样式 */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.nav-link {
+    font-weight: 600;
+    color: var(--dark-color) !important;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+/* 卡片样式 */
+.card {
+    border: none;
+    border-radius: var(--card-border-radius);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 分类卡片 */
+.category-card {
+    background-color: white;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: all var(--transition-speed);
+    border-radius: var(--card-border-radius);
+}
+
+.category-card:hover {
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+}
+
+.category-card i {
+    color: var(--primary-color);
+    transition: color var(--transition-speed);
+}
+
+.category-card:hover i {
+    color: white;
+}
+
+/* 提示词卡片 */
+.prompt-card {
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.prompt-card .card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+.prompt-card .card-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.prompt-card .card-text {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.prompt-card .card-footer {
+    background-color: transparent;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 0.75rem 1.25rem;
+}
+
+.prompt-card .tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    background-color: #e9ecef;
+    color: var(--dark-color);
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+    transition: all var(--transition-speed);
+}
+
+.prompt-card .tag:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 分隔线 */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--secondary-color);
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.divider::before {
+    margin-right: 1rem;
+}
+
+.divider::after {
+    margin-left: 1rem;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* 交互按钮 */
+.action-btn {
+    color: var(--secondary-color);
+    background: none;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color var(--transition-speed);
+}
+
+.action-btn:hover {
+    color: var(--primary-color);
+}
+
+.action-btn.active {
+    color: var(--primary-color);
+}
+
+.action-btn i {
+    margin-right: 0.25rem;
+}
+
+/* 页脚样式 */
+footer {
+    margin-top: 3rem;
+    color: var(--secondary-color);
+}
+
+footer a {
+    color: var(--dark-color);
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .prompt-card .card-img-top {
+        height: 140px;
+    }
+}
+
+/* 提示词详情页样式 */
+.prompt-detail-header {
+    background-color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.prompt-detail-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--card-border-radius);
+}
+
+.prompt-content {
+    background-color: white;
+    border-radius: var(--card-border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.prompt-code {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    white-space: pre-wrap;
+    margin: 1rem 0;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.copy-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 用户资料页样式 */
+.profile-header {
+    background-color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid white;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.profile-stat-item {
+    padding: 0 1rem;
+}
+
+.profile-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.profile-stat-label {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+/* 加载动画 */
+.loader {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(0,0,0,0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 通知样式 */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}

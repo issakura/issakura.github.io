@@ -1,0 +1,73 @@
+/* 登录和注册页面特定样式 */
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+    padding: 2.5rem;
+}
+
+.form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+}
+
+.toggle-password {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #858796;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.divider::before {
+    margin-right: 1rem;
+}
+
+.divider::after {
+    margin-left: 1rem;
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.social-login .btn {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-login .btn i {
+    margin: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+}
