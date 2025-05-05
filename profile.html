@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页 - AI提示词宝库</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 自定义CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-robot me-2"></i>AI提示词宝库
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
+                            分类
+                        </a>
+                        <ul class="dropdown-menu" id="categoriesList">
+                            <li><a class="dropdown-item" href="category.html?cat=writing">文案写作</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=image">图像生成</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=coding">编程助手</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=business">商业应用</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=education">教育学习</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="create-prompt.html">创建提示词</a>
+                    </li>
+                </ul>
+                
+                <!-- 搜索框 -->
+                <form class="d-flex me-2">
+                    <div class="input-group">
+                        <input class="form-control" type="search" placeholder="搜索提示词..." aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- 已登录状态 -->
+                <div class="user-profile">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar-placeholder.png" class="avatar-sm rounded-circle me-1" alt="用户头像">
+                            <span class="username">用户名</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html">我的主页</a></li>
+                            <li><a class="dropdown-item" href="profile.html#favorites">我的收藏</a></li>
+                            <li><a class="dropdown-item" href="profile.html#published">我的发布</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn">退出登录</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 个人资料头部 -->
+    <div class="profile-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <img src="assets/images/avatar-placeholder.png" id="profileAvatar" class="profile-avatar" alt="用户头像">
+                </div>
+                <div class="col-md-8">
+                    <h1 id="profileUsername">用户名</h1>
+                    <p class="text-muted">加入时间: <span id="profileJoinDate">2023年1月</span></p>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-value" id="profilePublishedCount">0</div>
+                            <div class="profile-stat-label">已发布</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-value" id="profileFavoritesCount">0</div>
+                            <div class="profile-stat-label">已收藏</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-value">0</div>
+                            <div class="profile-stat-label">获赞</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="create-prompt.html" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i> 创建提示词
+                        </a>
+                        <button class="btn btn-outline-primary ms-2" id="editProfileBtn">
+                            <i class="fas fa-edit me-1"></i> 编辑资料
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="container mt-4">
+        <!-- 选项卡导航 -->
+        <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="published-tab" data-bs-toggle="tab" data-bs-target="#published" type="button" role="tab" aria-controls="published" aria-selected="true">
+                    <i class="fas fa-file-alt me-1"></i> 我的发布
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="favorites-tab" data-bs-toggle="tab" data-bs-target="#favorites" type="button" role="tab" aria-controls="favorites" aria-selected="false">
+                    <i class="fas fa-bookmark me-1"></i> 我的收藏
+                </button>
+            </li>
+        </ul>
+        
+        <!-- 选项卡内容 -->
+        <div class="tab-content" id="profileTabsContent">
+            <!-- 已发布提示词 -->
+            <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-tab">
+                <div class="row" id="publishedGrid">
+                    <!-- 提示词卡片将通过JavaScript动态加载 -->
+                    <div class="col-12">
+                        <p class="text-center text-muted">加载中...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 收藏的提示词 -->
+            <div class="tab-pane fade" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
+                <div class="row" id="favoritesGrid">
+                    <!-- 提示词卡片将通过JavaScript动态加载 -->
+                    <div class="col-12">
+                        <p class="text-center text-muted">加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑资料模态框 -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">编辑个人资料</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="mb-3 text-center">
+                            <img src="assets/images/avatar-placeholder.png" id="editAvatarPreview" class="avatar-lg rounded-circle mb-2" alt="头像预览" style="width: 100px; height: 100px; object-fit: cover;">
+                            <div>
+                                <label for="avatarUpload" class="btn btn-sm btn-outline-primary">
+                                    更换头像
+                                </label>
+                                <input type="file" id="avatarUpload" class="d-none" accept="image/*">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editUsername" class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="editUsername">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editBio" class="form-label">个人简介</label>
+                            <textarea class="form-control" id="editBio" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="saveProfileBtn">保存更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="bg-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-robot me-2"></i>AI提示词宝库</h5>
+                    <p>发现、分享和管理AI提示词的最佳平台</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="category.html">浏览分类</a></li>
+                        <li><a href="create-prompt.html">创建提示词</a></li>
+                        <li><a href="#">关于我们</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>联系我们</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#"><i class="fab fa-weixin me-2"></i>微信公众号</a></li>
+                        <li><a href="#"><i class="fab fa-weibo me-2"></i>微博</a></li>
+                        <li><a href="mailto:contact@example.com"><i class="fas fa-envelope me-2"></i>contact@example.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2023 AI提示词宝库. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 自定义JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

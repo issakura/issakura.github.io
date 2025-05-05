@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建提示词 - AI提示词宝库</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 自定义CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-robot me-2"></i>AI提示词宝库
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
+                            分类
+                        </a>
+                        <ul class="dropdown-menu" id="categoriesList">
+                            <li><a class="dropdown-item" href="category.html?cat=writing">文案写作</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=image">图像生成</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=coding">编程助手</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=business">商业应用</a></li>
+                            <li><a class="dropdown-item" href="category.html?cat=education">教育学习</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="create-prompt.html">创建提示词</a>
+                    </li>
+                </ul>
+                
+                <!-- 搜索框 -->
+                <form class="d-flex me-2">
+                    <div class="input-group">
+                        <input class="form-control" type="search" placeholder="搜索提示词..." aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- 未登录状态 -->
+                <div class="d-flex auth-buttons">
+                    <a href="login.html" class="btn btn-outline-primary me-2">登录</a>
+                    <a href="register.html" class="btn btn-primary">注册</a>
+                </div>
+                
+                <!-- 已登录状态 (默认隐藏) -->
+                <div class="d-none user-profile">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar-placeholder.png" class="avatar-sm rounded-circle me-1" alt="用户头像">
+                            <span class="username">用户名</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html">我的主页</a></li>
+                            <li><a class="dropdown-item" href="profile.html#favorites">我的收藏</a></li>
+                            <li><a class="dropdown-item" href="profile.html#published">我的发布</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn">退出登录</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-4">创建AI提示词</h2>
+                        
+                        <form id="createPromptForm">
+                            <!-- 基本信息 -->
+                            <div class="mb-4">
+                                <h5>基本信息</h5>
+                                <div class="mb-3">
+                                    <label for="promptTitle" class="form-label">标题 <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="promptTitle" required>
+                                    <div class="form-text">一个简洁明了的标题，描述提示词的主要功能</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="promptDescription" class="form-label">简短描述 <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="promptDescription" required>
+                                    <div class="form-text">一句话描述提示词的用途和效果</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="promptCategory" class="form-label">分类 <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="promptCategory" required>
+                                        <option value="" selected disabled>选择分类</option>
+                                        <!-- 分类选项将通过JavaScript动态加载 -->
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="promptTags" class="form-label">标签</label>
+                                    <input type="text" class="form-control" id="promptTags">
+                                    <div class="form-text">多个标签用逗号分隔，如：写作,创意,营销</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 提示词内容 -->
+                            <div class="mb-4">
+                                <h5>提示词内容</h5>
+                                <div class="mb-3">
+                                    <label for="promptContent" class="form-label">提示词内容 <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="promptContent" rows="8" required></textarea>
+                                    <div class="form-text">输入完整的提示词内容，可以使用[占位符]表示用户需要填写的部分</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 使用案例 -->
+                            <div class="mb-4">
+                                <h5>使用案例</h5>
+                                <div class="mb-3">
+                                    <label for="promptUsageExample" class="form-label">使用示例 <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="promptUsageExample" rows="4" required></textarea>
+                                    <div class="form-text">描述如何使用这个提示词，以及可能的应用场景</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 图片 -->
+                            <div class="mb-4">
+                                <h5>图片</h5>
+                                <div class="mb-3">
+                                    <label for="promptImageUrl" class="form-label">封面图片URL <span class="text-danger">*</span></label>
+                                    <input type="url" class="form-control" id="promptImageUrl" required>
+                                    <div class="form-text">提供一个与提示词相关的图片URL，作为封面图片</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="promptExampleImageUrl" class="form-label">示例图片URL</label>
+                                    <input type="url" class="form-control" id="promptExampleImageUrl">
+                                    <div class="form-text">提供一个展示提示词效果的图片URL（可选）</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 提交按钮 -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">发布提示词</button>
+                                <button type="button" class="btn btn-outline-secondary">保存为草稿</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 提示和指南 -->
+            <div class="col-lg-4 d-none d-lg-block">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">创建提示词指南</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                使用清晰、具体的指令
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                包含必要的上下文信息
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                使用[占位符]标记用户需要填写的部分
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                提供具体的示例和使用场景
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                选择合适的分类和标签，便于他人发现
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">常见问题</h5>
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                        什么是好的AI提示词？
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="faqOne" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        好的AI提示词应该清晰、具体，包含必要的上下文信息，并明确指出期望的输出格式和风格。它应该避免模糊的指令，并尽可能提供具体的示例。
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                        如何使用占位符？
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="faqTwo" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        占位符用于标记用户需要填写的部分。例如："创建一个关于[主题]的[文章类型]，风格应该是[风格描述]"。这样其他用户在使用时，只需替换括号中的内容即可。
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                        我的提示词会被审核吗？
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="faqThree" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        是的，所有提交的提示词都会经过基本审核，以确保符合社区准则。请避免发布包含有害、不当或违反法律法规的内容。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="bg-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-robot me-2"></i>AI提示词宝库</h5>
+                    <p>发现、分享和管理AI提示词的最佳平台</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="category.html">浏览分类</a></li>
+                        <li><a href="create-prompt.html">创建提示词</a></li>
+                        <li><a href="#">关于我们</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>联系我们</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#"><i class="fab fa-weixin me-2"></i>微信公众号</a></li>
+                        <li><a href="#"><i class="fab fa-weibo me-2"></i>微博</a></li>
+                        <li><a href="mailto:contact@example.com"><i class="fas fa-envelope me-2"></i>contact@example.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2023 AI提示词宝库. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 自定义JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
